@@ -1,0 +1,80 @@
+footer {
+  color: #fff;
+  background-color: #222;
+}
+
+.text {
+  padding-bottom: 10px;
+}
+
+div.icon {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  margin-right: 8px;
+  display: inline-flex;
+  border-radius: 50%;
+}
+
+div.icon-facebook {
+  background-image: url(../../../../assets/images/logos/social/icon-facebook.png);
+}
+
+div.icon-facebook:hover {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.2)), url(../../../../assets/images/logos/social/icon-facebook.png);
+}
+
+div.icon-linkedin {
+  background-image: url(../../../../assets/images/logos/social/icon-linkedin.png);
+}
+
+div.icon-linkedin:hover {
+  
+  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.2)), url(../../../../assets/images/logos/social/icon-linkedin.png);
+}
+
+div.icon-email {
+  background-image: url(../../../../assets/images/logos/social/icon-email.png);
+}
+
+div.icon-email:hover {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.2)), url(../../../../assets/images/logos/social/icon-email.png);
+}
+
+@media	screen and (max-width: 599px) {
+  section {
+    padding: 10px 25px;
+  }
+}
+
+@media	screen and (min-width: 600px) and (max-width: 959px) {
+  section {
+    padding: 50px;
+  }
+
+  section:first-of-type {
+    padding-bottom: 25px;
+  }
+
+  section:last-of-type {
+    padding-top: 25px;
+  }
+}
+
+@media	screen and (min-width: 960px) and (max-width: 1279px) {
+  section {
+    padding: 50px;
+  }
+}
+
+@media	screen and (min-width: 1280px) and (max-width: 1919px) {
+  section {
+    padding: 50px;
+  }
+}
+
+@media	screen and (min-width: 1920px) and (max-width: 5000px) {
+  section {
+    padding: 50px;
+  }
+}

@@ -1,0 +1,20 @@
+<footer fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="space-evenly stretch">
+  <section fxFlex>
+    <h1>Contact Me</h1>
+    <p class="text">
+      I'm always open to new creative collaborations and would <mat-icon style="color: #e68484;">favorite</mat-icon>
+      to talk about any potential ideas or site improvments you have in mind. Don't hesitate to get in touch, even if it's
+      just to say, "Hello".
+    </p>
+    <a href="{{link.url}}" target="_blank" *ngFor="let link of social">
+      <div class="icon {{ link.css }}"></div>
+    </a>
+  </section>
+  <section fxFlex>
+    <h1 class="company">aWe <span>Motors</span></h1>
+    <p>&copy; 2019 | <mat-icon style="color: #f1da55;">
+        flash_on</mat-icon> by <a href="https://angular.io/" target="_blank">Angular {{ ngVersion.full }}</a>, <a
+        href="https://v7.material.angular.io/" target="_blank">Material 7.3.3</a>, and <a
+        href="https://material.io/tools/icons/?style=baseline" target="_blank">Icons</a></p>
+  </section>
+</footer>
