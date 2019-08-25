@@ -1,1 +1,39 @@
+/* You can add global styles to this file, and also import other style files */
+
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
+body {
+    padding: 0;
+    margin: 0;
+    background: #555;
+    font-family: 'Muli', 'Helvetica Neue', 'Arial', sans-serif;
+    line-height: 1.4 !important;
+    color: #fff;
+}
+
+body * {
+    transition: all 0.400s ease-in-out;
+}
+
+a, a:visited {
+    color: #fff;
+}
+
+.mat-toolbar {
+    background: #222;
+    color: #fff;
+    position: fixed;
+}
+
+.page-wrapper {
+    margin: 0 auto;
+}
+
+.company>span {
+    margin-right: 10px;
+    color: #2196F3;
+    font-weight: 600;
+}
+
+.company>span>b {
+    color: #fff;
+}
