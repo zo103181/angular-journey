@@ -7,13 +7,8 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ErrorsHandler } from './shared/providers/error-handler';
 import { HttpsInterceptor } from './shared/providers/http-interceptor';
 
-/* 
-  Used to verify we have things setup properly.
-  Will be moving to a SharedModule later 
-*/
-import { MatButtonModule } from '@angular/material/button';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
-import { FlexLayoutModule } from '@angular/flex-layout';
+// Shared
+import { SharedModule } from './shared/shared.module';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -25,9 +20,7 @@ import { AppComponent } from './app.component';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    MatButtonModule,
-    MatSnackBarModule,
-    FlexLayoutModule,
+    SharedModule,
     AppRoutingModule
   ],
   providers: [
