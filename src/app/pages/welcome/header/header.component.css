@@ -1,0 +1,44 @@
+header {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(/assets/images/backgrounds/erik-mclean-1135719-unsplash.jpg);
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  color: #ffffff;
+  overflow: hidden;
+}
+
+section {
+  padding: 50px;
+  margin-top: 64px;
+}
+
+section h1 {
+  font-size: 4rem;
+  line-height: 4rem;
+}
+
+section p {
+  width: 50%;
+}
+
+@media screen and (min-width: 600px) and (max-width: 959px) {
+  section p {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 599px) { 
+  section {
+    padding: 25px;
+  }
+
+  section h1 {
+    font-size: 3rem;
+    line-height: 3rem;
+  }
+
+  section p {
+    width: 100%;
+  }
+}
