@@ -1,0 +1,57 @@
+.form-page-wrapper {
+    width: 100vw;
+    overflow: hidden;
+    height: 100vh;
+    background-color: #fff;
+    color: #000;
+}
+
+.form-page-intro {
+    padding: 128px;
+    background-color: #000;
+    color: #fff;
+}
+
+.form-page-intro>.logo {
+    width: 128px;
+    margin-bottom: 32px;
+}
+
+.form-page-intro>.title {
+    font-size: 42px;
+    font-weight: 600;
+    line-height: 1;
+}
+
+.form-wrapper {
+    width: 400px;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.form-section {
+    padding: 128px 48px 48px 48px;
+}
+
+.form-section>.logo {
+    margin: 32px auto;
+}
+
+.form-section>.title {
+    font-size: 21px;
+}
+
+.form-section>form {
+    width: 100%;
+    padding-top: 32px;
+}
+
+.form-section>form mat-form-field {
+    width: 100%;
+}
+
+.form-section>form>.submit-button {
+    width: 100%;
+    margin: 16px auto;
+    display: block;
+}
