@@ -2,7 +2,14 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
-  { path: '', loadChildren: './pages/welcome/welcome.module#WelcomeModule' }
+  {
+    path: 'auth',
+    loadChildren: './pages/authentication/authentication.module#AuthenticationModule'
+  },
+  {
+    path: '',
+    loadChildren: './pages/welcome/welcome.module#WelcomeModule'
+  }
 ];
 
 @NgModule({
