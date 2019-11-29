@@ -1,6 +1,6 @@
 <mat-toolbar>
     <div class="company">
-        <span><b>aWe</b> Motors</span>
+        <span><b>Angular 7</b> Journey</span>
     </div>
     <!--
     We will use this later on.
@@ -9,7 +9,20 @@
     </div>
     -->
     <span fxFlex></span>
-    <button mat-icon-button>
+    <button mat-icon-button *ngIf="!auth.user" (click)="goToLogin()">
         <mat-icon>account_circle</mat-icon>
     </button>
+
+    <div *ngIf="auth.user">
+        <button mat-icon-button [matMenuTriggerFor]="userMenu">
+            <img class="avatar-photo" *ngIf="auth.user?.photoURL" [src]="auth.user?.photoURL" />
+            <mat-icon *ngIf="!auth.user?.photoURL">person</mat-icon>
+        </button>
+        <mat-menu #userMenu="matMenu" xPosition="before">
+            <ng-template matMenuContent>
+                <!--<button mat-menu-item [routerLink]="'/user/settings'">Settings</button>-->
+                <button mat-menu-item (click)="onLogout()">Logout</button>
+            </ng-template>
+        </mat-menu>
+    </div>
 </mat-toolbar>

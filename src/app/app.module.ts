@@ -11,6 +11,9 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 // Environments
 import { environment } from '../environments/environment';
 
+// Services
+import { AuthService } from './shared/services/authentication.service';
+
 // Providers
 import { ErrorsHandler } from './shared/providers/error-handler';
 import { HttpsInterceptor } from './shared/providers/http-interceptor';
@@ -35,6 +38,7 @@ import { AppComponent } from './app.component';
     AppRoutingModule
   ],
   providers: [
+    AuthService,
     { provide: ErrorHandler, useClass: ErrorsHandler },
     { provide: HTTP_INTERCEPTORS, useClass: HttpsInterceptor, multi: true }
   ],

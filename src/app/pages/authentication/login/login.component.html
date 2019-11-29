@@ -1,0 +1,80 @@
+<div class="form-page-wrapper" fxLayout="row" fxLayoutAlign="start">
+
+  <section class="form-page-intro" fxFlex fxHide fxShow.gt-xs>
+    <div class="logo"><img src="assets/images/logos/company.logo.png"></div>
+    <div class="title company">
+      <span><b>Company</b> Name</span>
+    </div>
+  </section>
+
+  <div class="form-wrapper">
+    <section class="form-section">
+      <div class="logo" fxHide.gt-xs><img src="assets/images/logos/company.logo.png"></div>
+
+      <div class="title">LOGIN TO YOUR ACCOUNT</div>
+
+      <form [formGroup]="loginForm" novalidate>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" autocomplete="email" required>
+          <mat-icon matSuffix>mail</mat-icon>
+          <mat-error *ngFor="let validation of loginValidation.email">
+            <mat-error *ngIf="loginForm.get('email').hasError(validation.type) && 
+                    (loginForm.get('email').dirty || 
+                    loginForm.get('email').touched)">
+              {{validation.message}}</mat-error>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input matInput type="password" formControlName="password" minlength="5" autocomplete="current-password" required>
+          <mat-icon matSuffix>vpn_key</mat-icon>
+          <mat-error *ngFor="let validation of loginValidation.password">
+            <mat-error *ngIf="loginForm.get('password').hasError(validation.type) && 
+                              (loginForm.get('password').dirty || 
+                              loginForm.get('password').touched)">
+              {{validation.message}}</mat-error>
+          </mat-error>
+        </mat-form-field>
+
+        <div class="remember-forgot-password" fxLayout="row" fxLayout.lt-lg="column"
+          fxLayoutAlign="space-between center">
+          <mat-checkbox class="remember-me" aria-label="Remember Me">
+            Remember Me
+          </mat-checkbox>
+
+          <a class="forgot-password" [routerLink]="'/auth/forgot-password'">
+            Forgot Password?
+          </a>
+        </div>
+
+        <button mat-raised-button color="primary" class="submit-button" aria-label="LOGIN"
+          [disabled]="loginForm.invalid" (click)="onLoginWithEmail()">
+          LOGIN
+        </button>
+
+      </form>
+
+      <div class="register" fxLayout="column" fxLayoutAlign="center center">
+        <span class="text">Don't have an account?</span>
+        <a class="link" [routerLink]="'/auth/register'">Create an account</a>
+      </div>
+
+      <div class="separator">
+        <span class="text">OR</span>
+      </div>
+
+      <div class="register" fxLayout="column" fxLayoutAlign="center center">
+        <span class="text">LOGIN WITH</span>
+      </div>
+
+      <div fxLayout="column" fxLayoutAlign="start center">
+        <button mat-raised-button class="google" (click)="onLoginWithGoogle()">GOOGLE</button>
+      </div>
+
+    </section>
+  </div>
+
+</div>
