@@ -132,5 +132,8 @@
       }
     }
   },
-  "defaultProject": "angular7-journey"
+  "defaultProject": "angular7-journey",
+  "cli": {
+    "analytics": false
+  }
 }
