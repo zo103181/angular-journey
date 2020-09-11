@@ -7,8 +7,6 @@ import { AuthService } from './shared/services/authentication.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'angular7-journey';
-
   constructor(
     protected auth: AuthService
   ) {}
