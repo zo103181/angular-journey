@@ -116,7 +116,7 @@ export class AuthService {
             // get authentication state from AngularFireAuth
             await this.afAuth.authState.subscribe(user => {
                 if (user) {
-                    // user was authenitcated, set values
+                    // user was authenticated, set values
                     this.user = {
                         'uid': user.uid,
                         'email': user.email,
