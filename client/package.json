@@ -26,7 +26,6 @@
     "@angular/platform-browser-dynamic": "^10.1.2",
     "@angular/router": "^10.1.2",
     "core-js": "^3.6.5",
-    "express": "^4.17.1",
     "firebase": "^7.21.0",
     "node-pre-gyp": "^0.15.0",
     "rxjs": "~6.6.3",

@@ -21,8 +21,8 @@
     ]
   },
   "files": [ 
-    "src/client/main.ts", 
-    "src/client/polyfills.ts" 
+    "src/main.ts", 
+    "src/polyfills.ts" 
   ], 
   "include": [ 
     "src/**/*.d.ts" 
