@@ -3,16 +3,28 @@ const bodyParser = require("body-parser");
 const app = express();
 const path = require('path');
 
+let user = [];
+const rootUrl = '/api';
+
 app.use(bodyParser.json());
 
 // app.use(express.static(__dirname + '../../../dist'));
 
-app.get('/api/status', (req, res) => {
+app.get(`${rootUrl}/user`, (req, res) => { res.json(user); });
+
+app.post(`${rootUrl}/user`, (req, res) => {
+  const reqUser = req.body.user;
+  user = [];
+  user.push(JSON.parse(reqUser));
+  res.json(reqUser);
+});
+
+app.get(`${rootUrl}/status`, (req, res) => {
   res.json({info: 'Node.js, Express, and Postgres API'});
 });
 
 app.get('/', (req, res) => {
-  res.send('Hello World!!');
+  res.send('Hello World!');
 });
 
 // Listen to the specified port, otherwise 3080
