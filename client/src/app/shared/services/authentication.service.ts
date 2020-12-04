@@ -1,4 +1,5 @@
 import { Injectable, Injector } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 // Firebase
@@ -7,10 +8,6 @@ import '@firebase/auth';
 
 // Angularfire2
 import { AngularFireAuth } from '@angular/fire/auth';
-import {
-    AngularFirestore,
-    AngularFirestoreDocument
-} from '@angular/fire/firestore';
 
 // Services
 import { NotificationService } from './notification.service';
@@ -29,10 +26,11 @@ export class AuthService {
     notifier: NotificationService;
     user: IUser;
     isLoading: boolean;
+    rootURL = '/api';
 
     constructor(
         private afAuth: AngularFireAuth,
-        private afs: AngularFirestore,
+        private http: HttpClient,
         private router: Router,
         private injector: Injector
     ) {
@@ -158,8 +156,6 @@ export class AuthService {
         emailVerified }: IUser,
         registrationName?: string
     ) {
-        const userRef: AngularFirestoreDocument<IUser> = this.afs.doc(`users/${uid}`);
-
         const data: IUser = {
             uid,
             email,
@@ -168,7 +164,12 @@ export class AuthService {
             emailVerified: emailVerified
         }
 
-        return await userRef.set(data, { merge: true });
+        const headers = { 'content-type': 'application/json'};
+        const body = JSON.stringify(data);
+
+        (await this.http.post<IUser>(this.rootURL + '/user', { user: body }, { headers }).subscribe(result => {
+            return result
+        }), (error) => { throw error });
     }
 
 }
