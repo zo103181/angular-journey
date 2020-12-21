@@ -58,7 +58,7 @@ app.post(`${rootUrl}/user`, (req, res) => {
           emailverified, 
           photourl
       ) VALUES ($1, $2, $3, $4, $5) 
-      ON CONFLICT DOS NOTHING 
+      ON CONFLICT DO NOTHING 
       RETURNING uid, displayname, email, emailverified, photourl`,
       [uid, displayName, email, emailVerified, photoURL]);
     if (results.rowCount === 0) { 
