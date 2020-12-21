@@ -1,4 +1,5 @@
 import { Injectable, Injector } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 // Firebase
@@ -7,10 +8,6 @@ import '@firebase/auth';
 
 // Angularfire2
 import { AngularFireAuth } from '@angular/fire/auth';
-import {
-    AngularFirestore,
-    AngularFirestoreDocument
-} from '@angular/fire/firestore';
 
 // Services
 import { NotificationService } from './notification.service';
@@ -28,11 +25,12 @@ interface IUser {
 export class AuthService {
     notifier: NotificationService;
     user: IUser;
-    isLoading: boolean;
+    isLoading: boolean = false;
+    rootURL = '/api';
 
     constructor(
         private afAuth: AngularFireAuth,
-        private afs: AngularFirestore,
+        private http: HttpClient,
         private router: Router,
         private injector: Injector
     ) {
@@ -86,13 +84,12 @@ export class AuthService {
         await firebase.auth().getRedirectResult().then(auth => {
             // user property exists; this was a redirect
             if (auth.user) {
-                this.updateUserData(auth.user).then(() => {
+                this.updateUserData(auth.user).then((result) => {
                     this.getCurrentUser();
-                }, error => {
-                    // hide the progress spinner
-                    this.isLoading = false;
+                }).catch((response) => {
+                    this.afAuth.auth.signOut();
                     // use our notifier to show any errors
-                    this.notifier.showError(error.message);
+                    this.notifier.showError(response.error.message);
                 });
             } else {
                 // this was not a redirect; 
@@ -100,15 +97,17 @@ export class AuthService {
                 // in local storage
                 this.getCurrentUser();
             }
-        }, (error) => {
+        }).catch((response) => {
+            this.afAuth.auth.signOut();
+            // use our notifier to show any errors
+            this.notifier.showError(response.message);
+        }).finally(() => {
             // hide the progress spinner
             this.isLoading = false;
-            // use our notifier to show any errors
-            this.notifier.showError(error.message);
         });
     }
 
-    async getCurrentUser() {
+    async getCurrentUser(authUser?) {
         // get the local storage information by key
         const localUser = JSON.parse(localStorage.getItem('user'));
         if (localUser === null) {
@@ -158,8 +157,6 @@ export class AuthService {
         emailVerified }: IUser,
         registrationName?: string
     ) {
-        const userRef: AngularFirestoreDocument<IUser> = this.afs.doc(`users/${uid}`);
-
         const data: IUser = {
             uid,
             email,
@@ -168,7 +165,12 @@ export class AuthService {
             emailVerified: emailVerified
         }
 
-        return await userRef.set(data, { merge: true });
+        const headers = { 'content-type': 'application/json'};
+        const body = JSON.stringify(data);
+
+        return await this.http.post<IUser>(this.rootURL + '/user', { user: body }, { headers }).toPromise().then((result) => {
+            return result;
+        }).catch(error => { throw error });
     }
 
 }

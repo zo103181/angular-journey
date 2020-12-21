@@ -19,7 +19,7 @@
               "@firebase/auth",
               "@firebase/firestore"
             ],
-            "outputPath": "dist/angular-journey",
+            "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -63,7 +63,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "angular-journey:build"
+            "browserTarget": "angular-journey:build",
+            "proxyConfig": "proxy.conf.json"
           },
           "configurations": {
             "production": {

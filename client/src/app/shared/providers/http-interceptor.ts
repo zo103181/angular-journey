@@ -12,7 +12,6 @@ export class HttpsInterceptor implements HttpInterceptor {
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
     return next.handle(request).pipe(
-      retry(1),
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           // Attempt to refresh the current token, however if that fails redirect to login
