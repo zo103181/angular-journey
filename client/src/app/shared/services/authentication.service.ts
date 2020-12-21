@@ -25,7 +25,7 @@ interface IUser {
 export class AuthService {
     notifier: NotificationService;
     user: IUser;
-    isLoading: boolean;
+    isLoading: boolean = false;
     rootURL = '/api';
 
     constructor(
@@ -84,13 +84,12 @@ export class AuthService {
         await firebase.auth().getRedirectResult().then(auth => {
             // user property exists; this was a redirect
             if (auth.user) {
-                this.updateUserData(auth.user).then(() => {
+                this.updateUserData(auth.user).then((result) => {
                     this.getCurrentUser();
-                }, error => {
-                    // hide the progress spinner
-                    this.isLoading = false;
+                }).catch((response) => {
+                    this.afAuth.auth.signOut();
                     // use our notifier to show any errors
-                    this.notifier.showError(error.message);
+                    this.notifier.showError(response.error.message);
                 });
             } else {
                 // this was not a redirect; 
@@ -98,15 +97,17 @@ export class AuthService {
                 // in local storage
                 this.getCurrentUser();
             }
-        }, (error) => {
+        }).catch((response) => {
+            this.afAuth.auth.signOut();
+            // use our notifier to show any errors
+            this.notifier.showError(response.message);
+        }).finally(() => {
             // hide the progress spinner
             this.isLoading = false;
-            // use our notifier to show any errors
-            this.notifier.showError(error.message);
         });
     }
 
-    async getCurrentUser() {
+    async getCurrentUser(authUser?) {
         // get the local storage information by key
         const localUser = JSON.parse(localStorage.getItem('user'));
         if (localUser === null) {
@@ -167,9 +168,9 @@ export class AuthService {
         const headers = { 'content-type': 'application/json'};
         const body = JSON.stringify(data);
 
-        (await this.http.post<IUser>(this.rootURL + '/user', { user: body }, { headers }).subscribe(result => {
-            return result
-        }), (error) => { throw error });
+        return await this.http.post<IUser>(this.rootURL + '/user', { user: body }, { headers }).toPromise().then((result) => {
+            return result;
+        }).catch(error => { throw error });
     }
 
 }
