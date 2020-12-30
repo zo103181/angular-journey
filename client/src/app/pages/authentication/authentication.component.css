@@ -55,3 +55,53 @@
     margin: 16px auto;
     display: block;
 }
+
+.form-section .register {
+    margin: 32px auto 24px auto;
+    width: 250px;
+    font-weight: 500;
+}
+  
+.form-section .register .text {
+    margin-right: 8px;
+}
+  
+.form-section .register .link {
+    color: #2196F3;
+    font-weight: 700;
+}
+
+.form-section .separator {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 24px auto;
+    position: relative;
+    overflow: hidden;
+    width: 100px;
+    text-align: center;
+}
+
+.form-section .separator .text {
+    display: inline-flex;
+    position: relative;
+    padding: 0 8px;
+    z-index: 9999;
+}
+
+.form-section .separator .text::before, 
+.form-section .separator .text::after {
+    content: '';
+    display: block;
+    width: 30px;
+    position: absolute;
+    top: 10px;
+    border-top: 1px solid;
+}
+
+.form-section .separator .text::before {
+    right: 100%;
+}
+
+.form-section .separator .text::after {
+    left: 100%;
+}
