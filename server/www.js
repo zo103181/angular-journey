@@ -58,7 +58,12 @@ app.post(`${rootUrl}/user`, (req, res) => {
           emailverified, 
           photourl
       ) VALUES ($1, $2, $3, $4, $5) 
-      ON CONFLICT DO NOTHING 
+      ON CONFLICT ON CONSTRAINT users_email_key 
+      DO UPDATE SET uid = EXCLUDED.uid, 
+                    displayname = EXCLUDED.displayname,
+                    email = EXCLUDED.email,
+                    emailverified = EXCLUDED.emailverified,
+                    photourl = EXCLUDED.photourl
       RETURNING uid, displayname, email, emailverified, photourl`,
       [uid, displayName, email, emailVerified, photoURL]);
     if (results.rowCount === 0) { 
