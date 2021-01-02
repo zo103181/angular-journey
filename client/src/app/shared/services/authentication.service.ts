@@ -61,6 +61,37 @@ export class AuthService {
         await this.afAuth.auth.signInWithRedirect(provider);
     }
 
+    async registerWithEmail(
+        name: string,
+        email: string,
+        password: string
+      ): Promise<void> {
+        const registerName = name;
+
+        // Clear local storage
+        localStorage.clear();
+
+        await this.afAuth.auth
+          .createUserWithEmailAndPassword(email, password)
+          .then((credential) => {
+            this.updateUserData(credential.user, registerName).then((result) => {
+                this.getCurrentUser();
+            }).catch((response) => {
+                this.afAuth.auth.signOut();
+                // use our notifier to show any errors
+                this.notifier.showError(response.error.message);
+            });
+          })
+          .catch((error) => {
+            this.afAuth.auth.signOut();
+            // use our notifier to show any errors
+            this.notifier.showError(error.message);
+          }).finally(() => {
+            // hide the progress spinner
+            this.isLoading = false;
+          });
+      }
+
     async logout(): Promise<void> {
         // show the progress spinner
         this.isLoading = true;
@@ -126,7 +157,8 @@ export class AuthService {
                     // store information locally
                     localStorage.setItem('user', JSON.stringify(this.user));
                     // route authenticated user to appropriate page
-                    if (this.router.url === '/auth/login') {
+                    if (this.router.url === '/auth/login' ||
+                        this.router.url === '/auth/register') {
                         // user logging in, so take them to default page
                         this.router.navigate(['']);
                     }
