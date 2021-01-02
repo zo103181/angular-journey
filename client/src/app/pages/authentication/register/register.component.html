@@ -1,0 +1,143 @@
+<div class="form-page-wrapper" fxLayout="row" fxLayoutAlign="start">
+
+  <section class="form-page-intro" fxFlex fxHide fxShow.gt-xs>
+    <div class="logo"><img src="assets/images/logos/company.logo.png"></div>
+    <div class="title company">
+      <span><b>Company</b> Name</span>
+    </div>
+  </section>
+
+  <div class="form-wrapper">
+    <section class="form-section">
+      <div class="logo" fxHide.gt-xs><img src="assets/images/logos/company.logo.png"></div>
+
+      <div class="title" [hidden]="!hideTerms">CREATE AN ACCOUNT</div>
+      <div class="title" [hidden]="hideTerms">TERMS AND CONDITIONS</div>
+
+      <form name="registerForm" [formGroup]="registerForm" novalidate [hidden]="!hideTerms">
+
+        <mat-form-field appearance="outline">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name" minlength ng-trim="true" required>
+          <mat-icon matSuffix>person</mat-icon>
+          <mat-error *ngFor="let validation of registerValidation.name">
+            <mat-error 
+              *ngIf="registerForm.get('name').hasError(validation.type) && (registerForm.get('name').dirty || registerForm.get('name').touched)">
+              {{validation.message}}</mat-error>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" formControlName="email" autocomplete="email" required>
+          <mat-icon matSuffix>mail</mat-icon>
+          <mat-error *ngFor="let validation of registerValidation.email">
+            <mat-error 
+              *ngIf="registerForm.get('email').hasError(validation.type) && (registerForm.get('email').dirty || registerForm.get('email').touched)">
+              {{validation.message}}</mat-error>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input matInput type="password" formControlName="password" autocomplete="new-password" minlength required>
+          <mat-icon matSuffix>vpn_key</mat-icon>
+          <mat-error *ngFor="let validation of registerValidation.password">
+            <mat-error 
+              *ngIf="registerForm.get('password').hasError(validation.type) && (registerForm.get('password').dirty || registerForm.get('password').touched)">
+              {{validation.message}}</mat-error>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Confirm Password</mat-label>
+          <input matInput type="password" formControlName="passwordConfirm" autocomplete="new-password"
+            required>
+          <mat-icon matSuffix>vpn_key</mat-icon>
+          <mat-error *ngFor="let validation of registerValidation.passwordConfirm">
+            <mat-error
+              *ngIf="registerForm.get('passwordConfirm').hasError(validation.type) && (registerForm.get('passwordConfirm').dirty || registerForm.get('passwordConfirm').touched)">
+              {{validation.message}}</mat-error>
+          </mat-error>
+        </mat-form-field>
+
+        <div class="terms" fxLayout="row" fxLayoutAlign="center center">
+          <mat-checkbox name="terms" aria-label="Accept" formControlName="terms" color="primary" required>
+            <span>Accept</span>
+          </mat-checkbox>
+          <a href="#" (click)="onToggleTerms()">terms and conditions</a>
+        </div>
+
+        <button mat-raised-button color="primary" class="submit-button" aria-label="register"
+          [disabled]="registerForm.invalid" (click)="onUserRegister()">
+          CREATE AN ACCOUNT
+        </button>
+
+      </form>
+
+      <div class="register" fxLayout="column" fxLayoutAlign="center center">
+        <span class="text" [hidden]="!hideTerms">Already have an account?</span>
+        <a class="link" [routerLink]="'/auth/login'" [hidden]="!hideTerms">Login</a>
+      </div>
+
+      <section id="terms-section" [hidden]="hideTerms">
+        <h3 class="title">Privacy Policy</h3>
+        <p>
+          This is meant to help you understand what data we collect, why we collect it, and what we do with it. When you
+          share information
+          with us, we can make our services even better for you. For instance, we can show you more relevant search
+          results, help you connect with people or to make sharing with others quicker and easier. As you use our
+          services, we want you to be clear how we're using information and the ways in which you can protect your
+          privacy. This is important; we hope you will take time to read it carefully. Remember, you can find controls
+          to manage your information and protect your privacy and security. We’ve tried to keep it as simple as
+          possible.
+        </p>
+        <h3 class="title">Right To Access, Correct, and Delete Data</h3>
+        <p>
+          Our members have the right to access, correct and delete personal data relating to them, and to object to the
+          processing
+          of such data, by managing their profile. We make every effort to put in place suitable precautions to
+          safeguard the security and privacy of personal data, and to prevent it from being altered, corrupted,
+          destroyed or accessed by unauthorized third parties. However, we do not control each and every risk related
+          to the use of the Internet, and therefore warn the users of the potential risks involved in the functioning
+          and use of the Internet. We may include links to other web sites or other internet sources. We cannot
+          control these web sites and external sources, therefore cannot be held responsible for the provision
+          or display of these web sites and external sources, and may not be held liable for the content, advertising,
+          products, services or any other material available on or from these web sites or external sources.
+        </p>
+        <h3 class="title">Information We Collect</h3>
+        <p>
+          Our site collects data to operate effectively and provide you the best experiences with our services. You
+          provide some of
+          this data directly, such as when you create a personal account. We get some of it by recording how you
+          interact with our services by, for example, using technologies like cookies, and receiving error reports
+          or GPS location of your device.
+        </p>
+        <h3 class="title">How We Use Your Information</h3>
+        <p>
+          Our web site uses the data we collect for three basic purposes: to operate this site and provide (including
+          improving and
+          personalizing) the services we offer, to send communications, including promotional communications, and
+          to display advertising. In carrying out these purposes, we combine data we collect through the various
+          web site services you use to give you a more seamless, consistent and personalized experience. However,
+          to enhance privacy, we have built in technological and procedural safeguards designed to prevent certain
+          data combinations. For example, we store data we collect from you when you are unauthenticated (not signed
+          in) separately from any account information that directly identifies you, such as your name, email address
+          or phone number.
+        </p>
+
+        <hr>
+
+        <section fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="20px">
+          <button mat-raised-button color="primary" class="submit-button" aria-label="ACCEPT TERMS AND CONDITIONS"
+          (click)="onToggleTerms(true)">ACCEPT</button>
+          <button mat-raised-button color="warn" class="submit-button" aria-label="DECLINE TERMS AND CONDITIONS"
+          (click)="onToggleTerms(false)">DECLINE</button>
+        </section>
+        
+      </section>
+
+    </section>
+  </div>
+
+</div>
