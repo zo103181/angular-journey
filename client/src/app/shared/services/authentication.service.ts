@@ -61,6 +61,31 @@ export class AuthService {
         await this.afAuth.auth.signInWithRedirect(provider);
     }
 
+    async verifyPasswordResetCode(code: string): Promise<any> {
+        return await this.afAuth.auth.verifyPasswordResetCode(code).then((email) => {
+            return email;
+        }).catch((error) => {
+            console.log(error.message);
+        });
+    }
+
+    async confirmPasswordReset(code: string, newPassword: string): Promise<boolean> {
+        return await this.afAuth.auth.confirmPasswordReset(code, newPassword).then(() => {
+            return true;
+        }).catch((error) => {
+            this.notifier.showError(error.message);
+            return false;
+        });
+    }
+
+    async sendPasswordResetEmail(email: string): Promise<void> {
+        await this.afAuth.auth.sendPasswordResetEmail(email).then(() => {
+            this.router.navigate(['auth/reset-confirm']);
+        }).catch((error) => {
+            this.notifier.showError(error.message);
+        });
+    }
+
     async registerWithEmail(
         name: string,
         email: string,
