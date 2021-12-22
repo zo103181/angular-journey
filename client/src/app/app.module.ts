@@ -4,9 +4,18 @@ import { NgModule, ErrorHandler } from '@angular/core';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 // Firebase
-import { AngularFireModule } from '@angular/fire';
-import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { AngularFireAuthModule } from '@angular/fire/auth';
+import {
+  initializeApp,
+  provideFirebaseApp
+} from '@angular/fire/app';
+import {
+  provideAuth,
+  getAuth
+} from '@angular/fire/auth';
+import {
+  provideFirestore,
+  getFirestore
+} from '@angular/fire/firestore'
 
 // Environments
 import { environment } from '../environments/environment';
@@ -31,9 +40,9 @@ import { AppComponent } from './app.component';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    AngularFireModule.initializeApp(environment.firebase),
-    AngularFirestoreModule,
-    AngularFireAuthModule,
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideFirestore(() => getFirestore()),
+    provideAuth(() => getAuth()),
     HttpClientModule,
     SharedModule,
     AppRoutingModule
