@@ -3,11 +3,18 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 // Firebase
-import { firebase } from '@firebase/app';
-import '@firebase/auth';
-
-// Angularfire2
-import { AngularFireAuth } from '@angular/fire/auth';
+import {
+    Auth,
+    GoogleAuthProvider,
+    confirmPasswordReset,
+    createUserWithEmailAndPassword,
+    getRedirectResult,
+    sendPasswordResetEmail,
+    signInWithEmailAndPassword,
+    signInWithRedirect,
+    signOut,
+    verifyPasswordResetCode
+} from '@angular/fire/auth'
 
 // Services
 import { NotificationService } from './notification.service';
@@ -29,7 +36,7 @@ export class AuthService {
     rootURL = '/api';
 
     constructor(
-        private afAuth: AngularFireAuth,
+        private auth: Auth,
         private http: HttpClient,
         private router: Router,
         private injector: Injector
@@ -39,7 +46,8 @@ export class AuthService {
     }
 
     async loginWithEmail(email: string, password: string): Promise<void> {
-        await this.afAuth.auth.signInWithEmailAndPassword(
+        await signInWithEmailAndPassword(
+            this.auth,
             email,
             password
         ).then(credential => {
@@ -55,14 +63,14 @@ export class AuthService {
     }
 
     async loginWithGoogle(): Promise<void> {
-        const provider = new firebase.auth.GoogleAuthProvider();
+        const provider = new GoogleAuthProvider();
         provider.addScope('profile');
         provider.addScope('email');
-        await this.afAuth.auth.signInWithRedirect(provider);
+        await signInWithRedirect(this.auth, provider);
     }
 
     async verifyPasswordResetCode(code: string): Promise<any> {
-        return await this.afAuth.auth.verifyPasswordResetCode(code).then((email) => {
+        return await verifyPasswordResetCode(this.auth, code).then((email) => {
             return email;
         }).catch((error) => {
             console.log(error.message);
@@ -70,7 +78,7 @@ export class AuthService {
     }
 
     async confirmPasswordReset(code: string, newPassword: string): Promise<boolean> {
-        return await this.afAuth.auth.confirmPasswordReset(code, newPassword).then(() => {
+        return await confirmPasswordReset(this.auth, code, newPassword).then(() => {
             return true;
         }).catch((error) => {
             this.notifier.showError(error.message);
@@ -79,7 +87,7 @@ export class AuthService {
     }
 
     async sendPasswordResetEmail(email: string): Promise<void> {
-        await this.afAuth.auth.sendPasswordResetEmail(email).then(() => {
+        await sendPasswordResetEmail(this.auth, email).then(() => {
             this.router.navigate(['auth/reset-confirm']);
         }).catch((error) => {
             this.notifier.showError(error.message);
@@ -90,37 +98,36 @@ export class AuthService {
         name: string,
         email: string,
         password: string
-      ): Promise<void> {
+    ): Promise<void> {
         const registerName = name;
 
         // Clear local storage
         localStorage.clear();
 
-        await this.afAuth.auth
-          .createUserWithEmailAndPassword(email, password)
-          .then((credential) => {
-            this.updateUserData(credential.user, registerName).then((result) => {
-                this.getCurrentUser();
-            }).catch((response) => {
-                this.afAuth.auth.signOut();
+        await createUserWithEmailAndPassword(this.auth, email, password)
+            .then((credential) => {
+                this.updateUserData(credential.user, registerName).then((result) => {
+                    this.getCurrentUser();
+                }).catch((response) => {
+                    signOut(this.auth);
+                    // use our notifier to show any errors
+                    this.notifier.showError(response.error.message);
+                });
+            })
+            .catch((error) => {
+                signOut(this.auth);
                 // use our notifier to show any errors
-                this.notifier.showError(response.error.message);
+                this.notifier.showError(error.message);
+            }).finally(() => {
+                // hide the progress spinner
+                this.isLoading = false;
             });
-          })
-          .catch((error) => {
-            this.afAuth.auth.signOut();
-            // use our notifier to show any errors
-            this.notifier.showError(error.message);
-          }).finally(() => {
-            // hide the progress spinner
-            this.isLoading = false;
-          });
-      }
+    }
 
     async logout(): Promise<void> {
         // show the progress spinner
         this.isLoading = true;
-        await this.afAuth.auth.signOut().then(() => {
+        await signOut(this.auth).then(() => {
             // clear the user information and local storage
             this.user = null;
             localStorage.clear();
@@ -137,13 +144,14 @@ export class AuthService {
     async verifyUserRedirect(): Promise<void> {
         // show the progress spinner
         this.isLoading = true;
-        await firebase.auth().getRedirectResult().then(auth => {
+
+        await getRedirectResult(this.auth).then(auth => {
             // user property exists; this was a redirect
-            if (auth.user) {
+            if (auth) {
                 this.updateUserData(auth.user).then((result) => {
                     this.getCurrentUser();
                 }).catch((response) => {
-                    this.afAuth.auth.signOut();
+                    signOut(this.auth);
                     // use our notifier to show any errors
                     this.notifier.showError(response.error.message);
                 });
@@ -154,7 +162,7 @@ export class AuthService {
                 this.getCurrentUser();
             }
         }).catch((response) => {
-            this.afAuth.auth.signOut();
+            signOut(this.auth);
             // use our notifier to show any errors
             this.notifier.showError(response.message);
         }).finally(() => {
@@ -168,8 +176,8 @@ export class AuthService {
         const localUser = JSON.parse(localStorage.getItem('user'));
         if (localUser === null) {
             // information not stored in local storage; 
-            // get authentication state from AngularFireAuth
-            await this.afAuth.authState.subscribe(user => {
+            // get authentication state
+            await this.auth.onAuthStateChanged(user => {
                 if (user) {
                     // user was authenticated, set values
                     this.user = {
@@ -222,7 +230,7 @@ export class AuthService {
             emailVerified: emailVerified
         }
 
-        const headers = { 'content-type': 'application/json'};
+        const headers = { 'content-type': 'application/json' };
         const body = JSON.stringify(data);
 
         return await this.http.post<IUser>(this.rootURL + '/user', { user: body }, { headers }).toPromise().then((result) => {
