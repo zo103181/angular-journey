@@ -8,8 +8,8 @@ import { AuthService } from './shared/services/authentication.service';
 })
 export class AppComponent {
   constructor(
-    protected auth: AuthService
-  ) {}
+    public auth: AuthService
+  ) { }
 
   throwNewError() {
     throw new Error(`This will be a very long error message that we will see how long it extends over and what the close looks like!`);

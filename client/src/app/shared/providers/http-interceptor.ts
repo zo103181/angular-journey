@@ -4,7 +4,7 @@ import {
   HttpInterceptor, HttpErrorResponse
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { retry, catchError } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 
 @Injectable()
 export class HttpsInterceptor implements HttpInterceptor {
@@ -15,8 +15,10 @@ export class HttpsInterceptor implements HttpInterceptor {
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
           // Attempt to refresh the current token, however if that fails redirect to login
+          console.log('http-interceptor:', error);
           return throwError(error);
         } else {
+          console.log('http-interceptor:', error);
           return throwError(error);
         }
       })
