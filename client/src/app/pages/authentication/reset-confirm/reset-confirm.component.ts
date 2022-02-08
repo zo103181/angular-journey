@@ -5,7 +5,7 @@ import { Component, OnInit } from '@angular/core';
     templateUrl: './reset-confirm.component.html',
     styleUrls: [
         './reset-confirm.component.scss',
-        '../authentication.component.css'
+        '../authentication.component.scss'
     ]
 })
 export class ResetConfirmComponent implements OnInit {

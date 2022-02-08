@@ -9,7 +9,7 @@ import { AuthService } from 'src/app/shared/services/authentication.service';
   templateUrl: './login.component.html',
   styleUrls: [
     './login.component.scss',
-    '../authentication.component.css'
+    '../authentication.component.scss'
   ]
 })
 export class LoginComponent implements OnInit {
