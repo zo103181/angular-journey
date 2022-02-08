@@ -8,7 +8,7 @@ import { AuthService } from 'src/app/shared/services/authentication.service';
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: [
-    './login.component.css',
+    './login.component.scss',
     '../authentication.component.css'
   ]
 })

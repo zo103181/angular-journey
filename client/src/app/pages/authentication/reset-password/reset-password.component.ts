@@ -8,7 +8,7 @@ import { AuthService } from 'src/app/shared/services/authentication.service';
     selector: 'app-reset-password',
     templateUrl: './reset-password.component.html',
     styleUrls: [
-        './reset-password.component.css',
+        './reset-password.component.scss',
         '../authentication.component.css'
     ]
 })

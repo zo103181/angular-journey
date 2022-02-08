@@ -40,7 +40,7 @@ export const confirmPasswordValidator: ValidatorFn = (
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css', '../authentication.component.css'],
+  styleUrls: ['./register.component.scss', '../authentication.component.css'],
 })
 export class RegisterComponent implements OnInit {
   registerForm: FormGroup;
