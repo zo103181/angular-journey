@@ -8,8 +8,8 @@ import { AuthService } from 'src/app/shared/services/authentication.service';
     selector: 'app-reset-password',
     templateUrl: './reset-password.component.html',
     styleUrls: [
-        './reset-password.component.css',
-        '../authentication.component.css'
+        './reset-password.component.scss',
+        '../authentication.component.scss'
     ]
 })
 export class ResetPasswordComponent implements OnInit {
@@ -21,20 +21,20 @@ export class ResetPasswordComponent implements OnInit {
 
     resetPasswordValidation = {
         password: [
-          { type: 'required', message: 'Password is required' },
-          { type: 'minlength', message: 'Password must be at least 5 characters long' }
+            { type: 'required', message: 'Password is required' },
+            { type: 'minlength', message: 'Password must be at least 5 characters long' }
         ]
-      };
+    };
 
     constructor(
         private formBuilder: FormBuilder,
-        private route: ActivatedRoute, 
+        private route: ActivatedRoute,
         public auth: AuthService
     ) { }
-    
-    ngOnInit(): void { 
+
+    ngOnInit(): void {
         this.resetPasswordForm = this.formBuilder.group({
-            email: [{value: '', disabled: true}, []],
+            email: [{ value: '', disabled: true }, []],
             password: ['', [Validators.required, Validators.minLength(5)]]
         })
 
@@ -45,14 +45,14 @@ export class ResetPasswordComponent implements OnInit {
                     if (email) {
                         this.codeExpired = false;
                         this.resetPasswordForm = this.formBuilder.group({
-                            email: [{value: email, disabled: true}, []],
+                            email: [{ value: email, disabled: true }, []],
                             password: ['', [Validators.required, Validators.minLength(5)]]
                         })
                     } else { this.codeExpired = true; }
                     this.isLoading = false;
                 })
             }
-          });
+        });
     }
 
     confirmPasswordReset() {

@@ -8,8 +8,8 @@ import { AuthService } from 'src/app/shared/services/authentication.service';
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: [
-    './login.component.css',
-    '../authentication.component.css'
+    './login.component.scss',
+    '../authentication.component.scss'
   ]
 })
 export class LoginComponent implements OnInit {

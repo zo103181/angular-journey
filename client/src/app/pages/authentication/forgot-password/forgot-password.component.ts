@@ -7,8 +7,8 @@ import { AuthService } from '../../../shared/services/authentication.service';
     selector: 'app-forgot-password',
     templateUrl: './forgot-password.component.html',
     styleUrls: [
-        './forgot-password.component.css',
-        '../authentication.component.css'
+        './forgot-password.component.scss',
+        '../authentication.component.scss'
     ]
 })
 export class ForgotPasswordComponent implements OnInit {
@@ -27,7 +27,7 @@ export class ForgotPasswordComponent implements OnInit {
     ) {
         this.forgotPasswordForm = this.formBuilder.group({
             email: ['', [Validators.required, Validators.email]]
-          });
+        });
     }
 
     ngOnInit(): void {
