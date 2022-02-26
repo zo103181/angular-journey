@@ -1,93 +1,23 @@
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss/base";
 
-@layer base {
-  /* HTML and Body default styles */
-  html,
-  body {
-      display: flex;
-      flex-direction: column;
-      flex: 1 1 auto;
-      width: 100%;
-      min-height: 100%;
-      -webkit-font-smoothing: auto;
-      -moz-osx-font-smoothing: auto;
+@layer base { 
+  /* Override default scroll width & look */
+  ::-webkit-scrollbar {
+    @apply w-1;
   }
-
-  /* Font size */
-  html {
-      font-size: 16px;
+    
+  ::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px #cbcbcd;
+    -webkit-box-shadow: inset 0 0 6px #cbcbcd;
   }
-
-  body {
-    margin: 0;
-    font-size: 0.875rem;
-  }
-
-  /* Better spacing and border for horizontal rule */
-  hr {
-      margin: 32px 0;
-      border-bottom-width: 1px;
-  }
-
-  /* Make images and videos to take up all the available space */
-  img {
-      width: 100%;
-      vertical-align: top;
+    
+  ::-webkit-scrollbar-thumb {
+    background-color: #a1a1a4;
   }
 }
 
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
-/* Override default scroll width & look */
-::-webkit-scrollbar {
-  width: 4px;
-}
-  
-::-webkit-scrollbar-track {
-  box-shadow: inset 0 0 6px #cbcbcd;
-  -webkit-box-shadow: inset 0 0 6px #cbcbcd;
-}
-  
-::-webkit-scrollbar-thumb {
-  background-color: #a1a1a4;
-}
-
-// Custom Theming for Angular Material
-// For more information: https://material.angular.io/guide/theming
-
-@import "~@angular/material/theming";
-
-// Plus imports for other components in your app.
-
-// Include the common styles for Angular Material. We include this here so that you only
-// have to load a single css file for Angular Material in your app.
-// Be sure that you only ever include this mixin once!
-
-@include mat-core();
-
-// Define the palettes for your theme using the Material Design palettes available in palette.scss
-// (imported above). For each palette, you can optionally specify a default, lighter, and darker
-// hue. Available color palettes: https://material.io/design/color/
-
-$theming-material-components-primary: mat-palette($mat-indigo);
-$theming-material-components-accent: mat-palette($mat-pink, A200, A100, A400);
-
-// The warn palette is optional (defaults to red).
-
-$theming-material-components-warn: mat-palette($mat-red);
-
-// Create the theme object (a Sass map containing all of the palettes).
-
-$theming-material-components-theme: mat-light-theme(
-  $theming-material-components-primary,
-  $theming-material-components-accent,
-  $theming-material-components-warn
-);
-
-// Include theme styles for core and each component used in your app.
-// Alternatively, you can import and @include the theme mixins for each component
-// that you are using.
-
-@include angular-material-theme($theming-material-components-theme);
+@import "@angular/material/prebuilt-themes/indigo-pink.css";

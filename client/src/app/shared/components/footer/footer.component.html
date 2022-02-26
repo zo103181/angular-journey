@@ -1,20 +1,51 @@
-<footer fxLayout="row" fxLayout.lt-md="column" fxLayoutAlign="space-evenly stretch">
-  <section fxFlex>
-    <h1>Contact Me</h1>
-    <p class="text">
-      I'm always open to new creative collaborations and would <mat-icon style="color: #e68484;">favorite</mat-icon>
+<!--
+  The footer is broken into two sections that we want to display side-by-side on screens 640px wide and above "sm:grid-cols-2"
+  Tailwind uses a mobile first breakpoint system; so on mobile we want these sections to stack on eachother "grid grid-cols-1"
+-->
+<footer class="text-white bg-gray-900 p-10 grid grid-cols-1 sm:grid-cols-2">
+  <!--
+    On mobile we give a padding bottom of 12px; (pb-3)
+    On sm and above we put the bottom padding to 0 and add 12px padding to left and right; (px-3)
+  -->
+  <section class="pb-3 sm:px-3 sm:pb-0">
+    <!--
+      Increase the h1 size to 24px, add 28px to the bottom padding of our paragraph tag, and color/animate our heart
+    -->
+    <h1 class="text-2xl">Contact Me</h1>
+    <p class="pb-7">
+      I'm always open to new creative collaborations and would <mat-icon class="text-red-300 animate-pulse">favorite
+      </mat-icon>
       to talk about any potential ideas or site improvments you have in mind. Don't hesitate to get in touch, even if
       it's just to say, "Hello".
     </p>
-    <a href="{{link.url}}" target="_blank" *ngFor="let link of social">
-      <div class="icon {{ link.css }}"></div>
+
+    <a href="{{link['url']}}" target="_blank" *ngFor="let link of social">
+      <!--
+        Our avatar icons we want to be 48px (w-12 h-12), round 
+        circles (rounded-full), with a margin right of 16px (mr-4) 
+        and display inline (inline-flex)
+      -->
+      <div class="w-12 h-12 mr-4 inline-flex rounded-full {{ link.css }}"></div>
     </a>
   </section>
-  <section fxFlex>
-    <h1 class="company">Angular <span>Journey</span></h1>
-    <p>&copy; 2019 | <mat-icon style="color: #f1da55;">
-        flash_on</mat-icon> by <a href="https://angular.io/" target="_blank">Angular</a>, <a
-        href="https://material.angular.io/" target="_blank">Material</a>, and <a
-        href="https://material.io/tools/icons/?style=baseline" target="_blank">Icons</a></p>
+  <!--
+    On mobile we want a bit of padding top (12px) and our text to 
+    be positioned to the left (justify-self-start)
+    On sm and above we will remove the padding top (pt-0), add left 
+    and right padding (sm:px-3), and position the text to the right (justify-self-end)
+  -->
+  <section class="pt-3 justify-self-start sm:px-3 sm:pt-0 sm:justify-self-end">
+    <!--
+      Increase the h1 size to 24px, add some coloring to the icon, 
+      and make the links a light blue color
+    -->
+    <h1 class="text-2xl"><span><b class="text-blue-500">Angular</b> Journey</span></h1>
+    <p>&copy; 2019 | <mat-icon class="text-yellow-300">
+        flash_on</mat-icon> by
+      <a href="https://angular.io/" target="_blank" class="text-blue-500 hover:underline">Angular</a>,
+      <a href="https://material.angular.io/" target="_blank" class="text-blue-500 hover:underline">Material</a>,
+      and <a href="https://material.io/tools/icons/?style=baseline" target="_blank"
+        class="text-blue-500 hover:underline">Icons</a>
+    </p>
   </section>
 </footer>
