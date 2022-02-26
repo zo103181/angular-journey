@@ -39,8 +39,7 @@ export const confirmPasswordValidator: ValidatorFn = (
 
 @Component({
   selector: 'app-register',
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss', '../authentication.component.scss'],
+  templateUrl: './register.component.html'
 })
 export class RegisterComponent implements OnInit {
   registerForm: FormGroup;
@@ -68,6 +67,9 @@ export class RegisterComponent implements OnInit {
       { type: 'required', message: 'Confirm password is required' },
       { type: 'passwordsNotMatching', message: 'Passwords must match' },
     ],
+    terms: [
+      { type: 'required', message: 'You must accept the Terms and Conditions' }
+    ]
   };
 
   constructor(private formBuilder: FormBuilder, protected auth: AuthService) {

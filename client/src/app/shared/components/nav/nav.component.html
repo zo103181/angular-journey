@@ -1,27 +1,20 @@
-<mat-toolbar>
-    <div class="company">
-        <span><b>Angular</b> Journey</span>
+<mat-toolbar class="flex items-center justify-between p-3 text-white bg-gray-900">
+    <div>
+        <span><b class="text-blue-500">Angular</b> Journey</span>
     </div>
-    <!--
-    We will use this later on.
-    <div fxFlex fxShow="true" fxHide.lt-md>
-      <button mat-button><strong>Project</strong></button>
-    </div>
-    -->
-    <span fxFlex></span>
     <button mat-button *ngIf="!auth.user" (click)="goToLogin()">
         Sign In
     </button>
 
-    <div *ngIf="auth.user">
+    <div *ngIf="auth.user" class="mr-1">
         <button mat-icon-button [matMenuTriggerFor]="userMenu">
-            <img class="avatar-photo" *ngIf="auth.user?.photoURL" [src]="auth.user?.photoURL" />
-            <mat-icon *ngIf="!auth.user?.photoURL">person</mat-icon>
+            <img class="inline-block h-10 w-10 rounded-full" *ngIf="auth.user?.photoURL" [src]="auth.user?.photoURL" />
+            <mat-icon class="inline-block h-10 w-10 rounded-full" *ngIf="!auth.user?.photoURL">person</mat-icon>
         </button>
-        <mat-menu #userMenu="matMenu" xPosition="before">
+        <mat-menu #userMenu="matMenu" xPosition="before" class="bg-white mt-3">
             <ng-template matMenuContent>
                 <!--<button mat-menu-item [routerLink]="'/user/settings'">Settings</button>-->
-                <button mat-menu-item (click)="onLogout()">Logout</button>
+                <button mat-menu-item (click)="onLogout()" class="hover:bg-gray-300">Logout</button>
             </ng-template>
         </mat-menu>
     </div>

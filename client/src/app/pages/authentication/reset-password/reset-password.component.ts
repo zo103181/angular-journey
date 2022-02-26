@@ -1,22 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 
 import { AuthService } from 'src/app/shared/services/authentication.service';
 
 @Component({
     selector: 'app-reset-password',
-    templateUrl: './reset-password.component.html',
-    styleUrls: [
-        './reset-password.component.scss',
-        '../authentication.component.scss'
-    ]
+    templateUrl: './reset-password.component.html'
 })
 export class ResetPasswordComponent implements OnInit {
     private code: string;
-    private codeExpired: boolean = true;
-    private isLoading: boolean = true;
-    private isPasswordReset: boolean = false;
+    codeExpired: boolean = true;
+    isLoading: boolean = true;
+    isPasswordReset: boolean = false;
     resetPasswordForm: FormGroup;
 
     resetPasswordValidation = {
@@ -34,7 +30,7 @@ export class ResetPasswordComponent implements OnInit {
 
     ngOnInit(): void {
         this.resetPasswordForm = this.formBuilder.group({
-            email: [{ value: '', disabled: true }, []],
+            email: [{ value: '', disabled: true }, [Validators.required]],
             password: ['', [Validators.required, Validators.minLength(5)]]
         })
 
@@ -51,6 +47,10 @@ export class ResetPasswordComponent implements OnInit {
                     } else { this.codeExpired = true; }
                     this.isLoading = false;
                 })
+            } else {
+                this.codeExpired = true;
+                this.isLoading = false;
+                this.isPasswordReset = false;
             }
         });
     }
