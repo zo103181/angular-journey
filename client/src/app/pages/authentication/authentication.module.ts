@@ -15,4 +15,4 @@ import { ResetPasswordModule } from './reset-password/reset-password.module';
         ResetPasswordModule,
     ]
 })
-export class AuthenticationModule {}
+export class AuthenticationModule { }

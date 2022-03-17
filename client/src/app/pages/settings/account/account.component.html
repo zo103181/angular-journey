@@ -1,0 +1,39 @@
+<div class="w-full max-w-3xl">
+
+    <!-- Form -->
+    <form [formGroup]="accountForm">
+
+        <!-- Section -->
+        <div class="w-full">
+            <div class="text-xl">Profile</div>
+            <div class="text-secondary">Following information is publicly displayed, be careful!</div>
+        </div>
+        <div class="grid sm:grid-cols-4 gap-6 w-full mt-8">
+            <!-- Name -->
+            <section class="sm:col-span-4 space-y-1">
+                <label class="block text-sm font-medium text-gray-700">Name</label>
+                <input id="name" [formControlName]="'name'"
+                    class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                <p *ngFor="let validation of formValidation.name">
+                    <span *ngIf="accountForm.get('name').hasError(validation.type) && 
+                          (accountForm.get('name').dirty || 
+                          accountForm.get('name').touched)" class="mt-2 text-sm text-red-600">
+                        {{validation.message}}</span>
+                </p>
+            </section>
+        </div>
+
+        <!-- Divider -->
+        <div class="my-10 border-t"></div>
+
+        <!-- Actions -->
+        <div class="flex items-center justify-end">
+            <button mat-stroked-button type="button">
+                Cancel
+            </button>
+            <button class="ml-4" mat-flat-button type="button" [color]="'primary'">Save
+            </button>
+        </div>
+    </form>
+
+</div>
