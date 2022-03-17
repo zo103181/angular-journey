@@ -1,6 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule, ErrorHandler } from '@angular/core';
+import { LayoutModule } from '@angular/cdk/layout';
+import { ExtraOptions, PreloadAllModules, RouterModule } from '@angular/router';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 // Firebase
@@ -30,8 +32,19 @@ import { HttpsInterceptor } from './shared/providers/http-interceptor';
 // Shared
 import { SharedModule } from './shared/shared.module';
 
-import { AppRoutingModule } from './app-routing.module';
+// Page Layout
+import { PageLayoutModule } from './layout/page-layout.module';
+
+// Core
+import { CoreModule } from './core/core.module';
+
 import { AppComponent } from './app.component';
+import { appRoutes } from './app.routing';
+
+const routerConfig: ExtraOptions = {
+  preloadingStrategy: PreloadAllModules,
+  scrollPositionRestoration: 'enabled'
+};
 
 @NgModule({
   declarations: [
@@ -40,12 +53,17 @@ import { AppComponent } from './app.component';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
+    RouterModule.forRoot(appRoutes, routerConfig),
+
+    // Firebase Modules
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideFirestore(() => getFirestore()),
     provideAuth(() => getAuth()),
     HttpClientModule,
     SharedModule,
-    AppRoutingModule
+    CoreModule,
+    LayoutModule,
+    PageLayoutModule
   ],
   providers: [
     AuthService,

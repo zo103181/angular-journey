@@ -1,0 +1,32 @@
+<div *ngIf="user">
+    <button *ngIf="user.photoURL" type="button" [matMenuTriggerFor]="userActions"
+        class="max-w-xs bg-white flex items-center text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+        <img class="h-8 w-8 rounded-full" [src]="user.photoURL" alt="">
+    </button>
+</div>
+
+<div *ngIf="!user || !user?.photoURL">
+    <button type="button" [matMenuTriggerFor]="userActions"
+        class="bg-white h-7 w-7 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+        <mat-icon class="h-7 w-7 rounded-full" [svgIcon]="'heroicons_outline:user'"></mat-icon>
+    </button>
+</div>
+
+<mat-menu [xPosition]="'before'" #userActions="matMenu">
+    <button mat-menu-item>
+        <span class="flex flex-col leading-none">
+            <span class="text-xs">Signed in as</span>
+            <span class="mt-1.5 text-md font-medium">{{user?.email}}</span>
+        </span>
+    </button>
+    <mat-divider class="my-2"></mat-divider>
+    <button mat-menu-item (click)="navigateTo('/settings')">
+        <mat-icon class="h-6 w-6" [svgIcon]="'heroicons_outline:cog'"></mat-icon>
+        <span>Settings</span>
+    </button>
+    <mat-divider class="my-2"></mat-divider>
+    <button mat-menu-item (click)="onLogout()">
+        <mat-icon class="h-6 w-6" [svgIcon]="'heroicons_outline:logout'"></mat-icon>
+        <span>Sign out</span>
+    </button>
+</mat-menu>

@@ -2,6 +2,9 @@ import { Injectable, Injector } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
+import { Observable, ReplaySubject } from 'rxjs';
+import { lastValueFrom } from 'rxjs/internal/lastValueFrom';
+
 // Firebase
 import {
     Auth,
@@ -20,7 +23,7 @@ import {
 import { NotificationService } from './notification.service';
 
 // Classes / Interfaces
-interface IUser {
+export interface IUser {
     uid: string;
     email: string;
     photoURL?: string;
@@ -31,7 +34,7 @@ interface IUser {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
     notifier: NotificationService;
-    user: IUser;
+    _user: ReplaySubject<IUser> = new ReplaySubject<IUser>(1);
     isLoading: boolean = false;
     rootURL = '/api';
 
@@ -43,6 +46,15 @@ export class AuthService {
     ) {
         this.notifier = this.injector.get(NotificationService);
         this.verifyUserRedirect();
+    }
+
+    set user(value: IUser) {
+        // Store the value
+        this._user.next(value);
+    }
+
+    get user$(): Observable<IUser> {
+        return this._user.asObservable();
     }
 
     async loginWithEmail(email: string, password: string): Promise<void> {
@@ -129,7 +141,7 @@ export class AuthService {
         this.isLoading = true;
         await signOut(this.auth).then(() => {
             // clear the user information and local storage
-            this.user = null;
+            this._user = null;
             localStorage.clear();
             // hide the progress spinner
             this.isLoading = false;
@@ -180,35 +192,38 @@ export class AuthService {
             await this.auth.onAuthStateChanged(user => {
                 if (user) {
                     // user was authenticated, set values
-                    this.user = {
+                    const userObj = {
                         'uid': user.uid,
                         'email': user.email,
                         'photoURL': user.photoURL,
                         'displayName': user.displayName,
                         'emailVerified': user.emailVerified
                     };
-                    // store information locally
-                    localStorage.setItem('user', JSON.stringify(this.user));
+
+                    // set and store information locally
+                    this._user.next(userObj);
+                    localStorage.setItem('user', JSON.stringify(userObj));
+
                     // route authenticated user to appropriate page
                     if (this.router.url === '/auth/login' ||
                         this.router.url === '/auth/register') {
                         // user logging in, so take them to default page
-                        this.router.navigate(['']);
+                        this.router.navigate(['dashboard']);
                     }
                     // hide the progress spinner
                     this.isLoading = false;
                 } else {
                     // user not authenticated, so NULL the value
-                    this.user = null;
+                    this._user.next(null);
                     // store null information locally
-                    localStorage.setItem('user', JSON.stringify(this.user));
+                    localStorage.setItem('user', null);
                     // hide the progress spinner
                     this.isLoading = false;
                 }
             });
         } else {
             // information already stored locally, so set to user variable
-            this.user = localUser;
+            this._user.next(localUser);
             // hide the progress spinner
             this.isLoading = false;
         }
@@ -233,7 +248,7 @@ export class AuthService {
         const headers = { 'content-type': 'application/json' };
         const body = JSON.stringify(data);
 
-        return await this.http.post<IUser>(this.rootURL + '/user', { user: body }, { headers }).toPromise().then((result) => {
+        return await lastValueFrom(this.http.post<IUser>(this.rootURL + '/user', { user: body }, { headers })).then((result) => {
             return result;
         }).catch(error => { throw error });
     }
