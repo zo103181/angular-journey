@@ -2,16 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 // Services
-import { AuthService } from 'src/app/shared/services/authentication.service';
+import { AuthService } from '../../../core/auth/authentication.service';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html'
+  selector: 'app-sign-in',
+  templateUrl: './sign-in.component.html'
 })
-export class LoginComponent implements OnInit {
-  loginForm: FormGroup;
+export class SignInComponent implements OnInit {
+  signInForm: FormGroup;
 
-  loginValidation = {
+  signInValidation = {
     email: [
       { type: 'required', message: 'Email is required' },
       { type: 'email', message: 'Please enter a valid email address' }
@@ -28,20 +28,20 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.loginForm = this.formBuilder.group({
+    this.signInForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(5)]]
     });
   }
 
-  onLoginWithEmail() {
-    this.auth.loginWithEmail(
-      this.loginForm.value.email,
-      this.loginForm.value.password
+  onSignInWithEmail() {
+    this.auth.signInWithEmail(
+      this.signInForm.value.email,
+      this.signInForm.value.password
     );
   }
 
-  onLoginWithGoogle() {
-    this.auth.loginWithGoogle();
+  onSignInWithGoogle() {
+    this.auth.signInWithGoogle();
   }
 }

@@ -6,21 +6,21 @@
       <div class="text-4xl font-extrabold tracking-tight leading-tight">Sign In</div>
       <div class="flex items-baseline mt-0.5 font-medium">
         <div>Don't have an account?</div>
-        <a class="ml-1 text-blue-500 hover:underline" [routerLink]="['/auth/register']">Sign Up</a>
+        <a class="ml-1 text-blue-500 hover:underline" [routerLink]="['/auth/sign-up']">Sign Up</a>
       </div>
 
       <!-- Sign In Form -->
-      <form class="mt-4" [formGroup]="loginForm" #signInNgForm="ngForm">
+      <form class="mt-4" [formGroup]="signInForm" #signInNgForm="ngForm">
 
         <!-- Email Field -->
         <section class="w-full space-y-1">
           <label class="block text-sm font-medium text-gray-700">Email</label>
           <input id="email" [formControlName]="'email'"
             class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-          <p *ngFor="let validation of loginValidation.email">
-            <span *ngIf="loginForm.get('email').hasError(validation.type) && 
-                    (loginForm.get('email').dirty || 
-                    loginForm.get('email').touched)" class="mt-2 text-sm text-red-600">
+          <p *ngFor="let validation of signInValidation.email">
+            <span *ngIf="signInForm.get('email').hasError(validation.type) && 
+                    (signInForm.get('email').dirty || 
+                    signInForm.get('email').touched)" class="mt-2 text-sm text-red-600">
               {{validation.message}}</span>
           </p>
         </section>
@@ -30,10 +30,10 @@
           <label class="block text-sm font-medium text-gray-700">Password</label>
           <input id="password" [formControlName]="'password'" type="password"
             class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-          <p *ngFor="let validation of loginValidation.password">
-            <span *ngIf="loginForm.get('password').hasError(validation.type) && 
-                    (loginForm.get('password').dirty || 
-                    loginForm.get('password').touched)" class="mt-2 text-sm text-red-600">
+          <p *ngFor="let validation of signInValidation.password">
+            <span *ngIf="signInForm.get('password').hasError(validation.type) && 
+                    (signInForm.get('password').dirty || 
+                    signInForm.get('password').touched)" class="mt-2 text-sm text-red-600">
               {{validation.message}}</span>
           </p>
         </section>
@@ -43,7 +43,7 @@
           <mat-checkbox [color]="'primary'">
             Remember me
           </mat-checkbox>
-          <a class="text-md font-medium text-blue-500 hover:underline" [routerLink]="['/auth/forgot-password']">
+          <a class="text-sm font-medium text-blue-500 hover:underline" [routerLink]="['/auth/forgot-password']">
             Forgot Password?
           </a>
         </div>
@@ -51,8 +51,8 @@
         <!-- Submit button -->
         <button
           class="w-full mt-6 px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:hover:bg-indigo-600"
-          [disabled]="!loginForm.valid || !loginForm.touched" (click)="onLoginWithEmail()">
-          LOGIN
+          [disabled]="!signInForm.valid || !signInForm.touched" (click)="onSignInWithEmail()">
+          SIGN IN
         </button>
 
         <!-- Separator -->
@@ -66,7 +66,7 @@
         <div class="flex items-center mt-4">
           <button
             class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-            type="button" (click)="onLoginWithGoogle()">
+            type="button" (click)="onSignInWithGoogle()">
             GOOGLE
           </button>
         </div>

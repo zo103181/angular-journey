@@ -1,9 +1,7 @@
 import { Injectable, Injector } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import { Observable, ReplaySubject } from 'rxjs';
-import { lastValueFrom } from 'rxjs/internal/lastValueFrom';
+import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
 
 // Firebase
 import {
@@ -20,50 +18,31 @@ import {
 } from '@angular/fire/auth'
 
 // Services
-import { NotificationService } from './notification.service';
-
-// Classes / Interfaces
-export interface IUser {
-    uid: string;
-    email: string;
-    photoURL?: string;
-    displayName?: string;
-    emailVerified: boolean;
-}
+import { NotificationService } from '../../shared/services/notification.service';
+import { UserService } from '../user/user.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
     notifier: NotificationService;
-    _user: ReplaySubject<IUser> = new ReplaySubject<IUser>(1);
     isLoading: boolean = false;
-    rootURL = '/api';
 
     constructor(
         private auth: Auth,
-        private http: HttpClient,
         private router: Router,
+        private userService: UserService,
         private injector: Injector
     ) {
         this.notifier = this.injector.get(NotificationService);
         this.verifyUserRedirect();
     }
 
-    set user(value: IUser) {
-        // Store the value
-        this._user.next(value);
-    }
-
-    get user$(): Observable<IUser> {
-        return this._user.asObservable();
-    }
-
-    async loginWithEmail(email: string, password: string): Promise<void> {
+    async signInWithEmail(email: string, password: string): Promise<void> {
         await signInWithEmailAndPassword(
             this.auth,
             email,
             password
         ).then(credential => {
-            this.updateUserData(credential.user).then(() => {
+            firstValueFrom(this.userService.update(credential.user)).then(() => {
                 this.getCurrentUser();
             }, error => {
                 this.isLoading = false;
@@ -74,7 +53,7 @@ export class AuthService {
         });
     }
 
-    async loginWithGoogle(): Promise<void> {
+    async signInWithGoogle(): Promise<void> {
         const provider = new GoogleAuthProvider();
         provider.addScope('profile');
         provider.addScope('email');
@@ -106,19 +85,21 @@ export class AuthService {
         });
     }
 
-    async registerWithEmail(
+    async signUpWithEmail(
         name: string,
         email: string,
         password: string
     ): Promise<void> {
-        const registerName = name;
+        const signUpName = name;
 
         // Clear local storage
         localStorage.clear();
 
         await createUserWithEmailAndPassword(this.auth, email, password)
             .then((credential) => {
-                this.updateUserData(credential.user, registerName).then((result) => {
+                firstValueFrom(
+                    this.userService.update(credential.user, signUpName)
+                ).then(() => {
                     this.getCurrentUser();
                 }).catch((response) => {
                     signOut(this.auth);
@@ -136,12 +117,12 @@ export class AuthService {
             });
     }
 
-    async logout(): Promise<void> {
+    async signOut(): Promise<void> {
         // show the progress spinner
         this.isLoading = true;
         await signOut(this.auth).then(() => {
             // clear the user information and local storage
-            this._user = null;
+            this.userService.user = null;
             localStorage.clear();
             // hide the progress spinner
             this.isLoading = false;
@@ -159,8 +140,11 @@ export class AuthService {
 
         await getRedirectResult(this.auth).then(auth => {
             // user property exists; this was a redirect
+            console.log('auth', auth);
             if (auth) {
-                this.updateUserData(auth.user).then((result) => {
+                firstValueFrom(
+                    this.userService.update(auth.user)
+                ).then(() => {
                     this.getCurrentUser();
                 }).catch((response) => {
                     signOut(this.auth);
@@ -183,7 +167,7 @@ export class AuthService {
         });
     }
 
-    async getCurrentUser(authUser?) {
+    async getCurrentUser() {
         // get the local storage information by key
         const localUser = JSON.parse(localStorage.getItem('user'));
         if (localUser === null) {
@@ -201,12 +185,12 @@ export class AuthService {
                     };
 
                     // set and store information locally
-                    this._user.next(userObj);
+                    this.userService.user = userObj;
                     localStorage.setItem('user', JSON.stringify(userObj));
 
                     // route authenticated user to appropriate page
-                    if (this.router.url === '/auth/login' ||
-                        this.router.url === '/auth/register') {
+                    if (this.router.url === '/auth/sign-in' ||
+                        this.router.url === '/auth/sign-up') {
                         // user logging in, so take them to default page
                         this.router.navigate(['dashboard']);
                     }
@@ -214,7 +198,7 @@ export class AuthService {
                     this.isLoading = false;
                 } else {
                     // user not authenticated, so NULL the value
-                    this._user.next(null);
+                    this.userService.user = null;
                     // store null information locally
                     localStorage.setItem('user', null);
                     // hide the progress spinner
@@ -223,34 +207,17 @@ export class AuthService {
             });
         } else {
             // information already stored locally, so set to user variable
-            this._user.next(localUser);
+            this.userService.user = localUser;
+
+            // route authenticated user to appropriate page
+            if (this.router.url === '/auth/sign-in' ||
+                this.router.url === '/auth/sign-up') {
+                // user logging in, so take them to default page
+                this.router.navigate(['dashboard']);
+            }
+
             // hide the progress spinner
             this.isLoading = false;
         }
     }
-
-    async updateUserData({
-        uid,
-        email,
-        displayName,
-        photoURL,
-        emailVerified }: IUser,
-        registrationName?: string
-    ) {
-        const data: IUser = {
-            uid,
-            email,
-            displayName: (registrationName) ? registrationName : displayName,
-            photoURL,
-            emailVerified: emailVerified
-        }
-
-        const headers = { 'content-type': 'application/json' };
-        const body = JSON.stringify(data);
-
-        return await lastValueFrom(this.http.post<IUser>(this.rootURL + '/user', { user: body }, { headers })).then((result) => {
-            return result;
-        }).catch(error => { throw error });
-    }
-
 }

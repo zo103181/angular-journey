@@ -23,7 +23,7 @@ import {
 import { environment } from '../environments/environment';
 
 // Services
-import { AuthService } from './shared/services/authentication.service';
+import { AuthService } from './core/auth/authentication.service';
 
 // Providers
 import { ErrorsHandler } from './shared/providers/error-handler';

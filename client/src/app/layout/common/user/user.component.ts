@@ -1,7 +1,8 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
-import { AuthService, IUser } from '../../../shared/services/authentication.service';
+import { User } from '../../../core/models/user.interface';
+import { UserService } from '../../../core/user/user.service';
 
 @Component({
     selector: 'user',
@@ -12,22 +13,21 @@ import { AuthService, IUser } from '../../../shared/services/authentication.serv
 })
 export class UserComponent implements OnInit, OnDestroy {
     @Input() showAvatar: boolean = true;
-    user: IUser;
+    user: User;
 
-    private _unsubscribeAll: Subject<any> = new Subject<any>();
+    private unsubscribeAll = new Subject<any>();
 
     constructor(
         private changeDetectorRef: ChangeDetectorRef,
-        private auth: AuthService,
-        private router: Router
+        private router: Router,
+        private userService: UserService
     ) { }
 
     ngOnInit(): void {
-        this.auth.user$
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((user: IUser) => {
+        this.userService.user$
+            .pipe(takeUntil(this.unsubscribeAll))
+            .subscribe((user: User) => {
                 this.user = user;
-
                 // Mark for check
                 this.changeDetectorRef.markForCheck();
             });
@@ -35,18 +35,15 @@ export class UserComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         // Unsubscribe from all subscriptions
-        this._unsubscribeAll.next(null);
-        this._unsubscribeAll.complete();
+        this.unsubscribeAll.next(null);
+        this.unsubscribeAll.complete();
     }
 
     navigateTo(path: string): void {
         this.router.navigate([path]);
     }
 
-    onLogout() {
-        this.auth.logout().then(() => {
-            // routes the user to root page
-            this.router.navigate(['']);
-        });
+    onLogout(): void {
+        this.router.navigate(['auth/sign-out']);
     }
 }
