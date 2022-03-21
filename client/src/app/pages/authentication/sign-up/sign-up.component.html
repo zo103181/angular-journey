@@ -7,23 +7,23 @@
         <div class="text-4xl font-extrabold tracking-tight leading-tight">Sign Up</div>
         <div class="flex items-baseline mt-0.5 font-medium">
           <div>Already have an account?</div>
-          <a class="ml-1 text-blue-500 hover:underline" [routerLink]="['/auth/login']">Sign In
+          <a class="ml-1 text-blue-500 hover:underline" [routerLink]="['/auth/sign-in']">Sign In
           </a>
         </div>
       </section>
 
       <!-- Sign Up Form -->
-      <form class="mt-4" name="registerForm" [formGroup]="registerForm" novalidate [hidden]="!hideTerms">
+      <form class="mt-4" name="signUpForm" [formGroup]="signUpForm" novalidate [hidden]="!hideTerms">
 
         <!-- Name Field -->
         <section class="w-full space-y-1">
           <label class="block text-sm font-medium text-gray-700">Name</label>
           <input id="name" [formControlName]="'name'"
             class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-          <p *ngFor="let validation of registerValidation.name">
-            <span *ngIf="registerForm.get('name').hasError(validation.type) && 
-                    (registerForm.get('name').dirty || 
-                    registerForm.get('name').touched)" class="mt-2 text-sm text-red-600">
+          <p *ngFor="let validation of signUpValidation.name">
+            <span *ngIf="signUpForm.get('name').hasError(validation.type) && 
+                    (signUpForm.get('name').dirty || 
+                    signUpForm.get('name').touched)" class="mt-2 text-sm text-red-600">
               {{validation.message}}</span>
           </p>
         </section>
@@ -33,10 +33,10 @@
           <label class="block text-sm font-medium text-gray-700">Email</label>
           <input id="email" [formControlName]="'email'"
             class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-          <p *ngFor="let validation of registerValidation.email">
-            <span *ngIf="registerForm.get('email').hasError(validation.type) && 
-                    (registerForm.get('email').dirty || 
-                    registerForm.get('email').touched)" class="mt-2 text-sm text-red-600">
+          <p *ngFor="let validation of signUpValidation.email">
+            <span *ngIf="signUpForm.get('email').hasError(validation.type) && 
+                    (signUpForm.get('email').dirty || 
+                    signUpForm.get('email').touched)" class="mt-2 text-sm text-red-600">
               {{validation.message}}</span>
           </p>
         </section>
@@ -47,10 +47,10 @@
           <input id="password" [formControlName]="'password'" type="password" autocomplete="new-password" minlength
             required
             class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-          <p *ngFor="let validation of registerValidation.password">
-            <span *ngIf="registerForm.get('password').hasError(validation.type) && 
-                    (registerForm.get('password').dirty || 
-                    registerForm.get('password').touched)" class="mt-2 text-sm text-red-600">
+          <p *ngFor="let validation of signUpValidation.password">
+            <span *ngIf="signUpForm.get('password').hasError(validation.type) && 
+                    (signUpForm.get('password').dirty || 
+                    signUpForm.get('password').touched)" class="mt-2 text-sm text-red-600">
               {{validation.message}}</span>
           </p>
         </section>
@@ -61,34 +61,34 @@
           <input id="passwordConfirm" type="password" [formControlName]="'passwordConfirm'" autocomplete="new-password"
             required
             class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-          <p *ngFor="let validation of registerValidation.passwordConfirm">
-            <span *ngIf="registerForm.get('passwordConfirm').hasError(validation.type) && 
-                    (registerForm.get('passwordConfirm').dirty || 
-                    registerForm.get('passwordConfirm').touched)" class="mt-2 text-sm text-red-600">
+          <p *ngFor="let validation of signUpValidation.passwordConfirm">
+            <span *ngIf="signUpForm.get('passwordConfirm').hasError(validation.type) && 
+                    (signUpForm.get('passwordConfirm').dirty || 
+                    signUpForm.get('passwordConfirm').touched)" class="mt-2 text-sm text-red-600">
               {{validation.message}}</span>
           </p>
         </section>
 
         <!-- Actions -->
-        <div class="text-md font-medium inline-flex items-end justify-between w-full mt-4">
-          <mat-checkbox name="terms" [formControlName]="'terms'" color="primary" checked required>
+        <div class="text-sm font-medium inline-flex items-end justify-between w-full mt-4">
+          <mat-checkbox name="terms" [formControlName]="'terms'" color="primary" required>
             I have read the
             <a href="#" (click)="onToggleTerms()" class="text-blue-500 hover:underline">
               Terms and Conditions
             </a>
           </mat-checkbox>
         </div>
-        <p *ngFor="let validation of registerValidation.terms">
-          <span *ngIf="registerForm.get('terms').hasError(validation.type) && 
-                    (registerForm.get('terms').dirty || 
-                    registerForm.get('terms').touched)" class="mt-2 text-sm text-red-600">
+        <p *ngFor="let validation of signUpValidation.terms">
+          <span *ngIf="signUpForm.get('terms').hasError(validation.type) && 
+                    (signUpForm.get('terms').dirty || 
+                    signUpForm.get('terms').touched)" class="mt-2 text-sm text-red-600">
             {{validation.message}}</span>
         </p>
 
         <!-- Submit Form -->
         <button
           class="w-full mt-4 px-4 py-2 rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:hover:bg-indigo-600"
-          [disabled]="!registerForm.valid || !registerForm.touched" (click)="onUserRegister()">
+          [disabled]="!signUpForm.valid || !signUpForm.touched" (click)="onUserSignUp()">
           CREATE ACCOUNT
         </button>
 

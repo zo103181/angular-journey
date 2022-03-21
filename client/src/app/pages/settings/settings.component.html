@@ -64,7 +64,7 @@
                     <ng-container [ngSwitch]="selectedPanel">
                         <!-- Account -->
                         <ng-container *ngSwitchCase="'account'">
-                            <settings-account></settings-account>
+                            <settings-account [user]="user"></settings-account>
                         </ng-container>
                     </ng-container>
                 </div>

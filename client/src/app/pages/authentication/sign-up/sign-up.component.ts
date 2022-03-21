@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -12,7 +12,7 @@ import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
 // Services
-import { AuthService } from '../../../shared/services/authentication.service';
+import { AuthService } from '../../../core/auth/authentication.service';
 
 export const confirmPasswordValidator: ValidatorFn = (
   control: AbstractControl
@@ -38,16 +38,16 @@ export const confirmPasswordValidator: ValidatorFn = (
 };
 
 @Component({
-  selector: 'app-register',
-  templateUrl: './register.component.html'
+  selector: 'app-sign-up',
+  templateUrl: './sign-up.component.html'
 })
-export class RegisterComponent implements OnInit {
-  registerForm: FormGroup;
+export class SignUpComponent implements OnInit, OnDestroy {
+  signUpForm: FormGroup;
   hideTerms: boolean;
 
   private unsubscribeAll: Subject<any>;
 
-  registerValidation = {
+  signUpValidation = {
     name: [
       { type: 'required', message: 'Name is required' },
       { type: 'minlength', message: 'Name must be at least 3 characters long' },
@@ -80,7 +80,7 @@ export class RegisterComponent implements OnInit {
   ngOnInit() {
     this.hideTerms = true;
 
-    this.registerForm = this.formBuilder.group({
+    this.signUpForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
@@ -90,27 +90,33 @@ export class RegisterComponent implements OnInit {
 
     // Update the validity of the 'passwordConfirm' field
     // when the 'password' field changes
-    this.registerForm
+    this.signUpForm
       .get('password')
       .valueChanges.pipe(takeUntil(this.unsubscribeAll))
       .subscribe(() => {
-        this.registerForm.get('passwordConfirm').updateValueAndValidity();
+        this.signUpForm.get('passwordConfirm').updateValueAndValidity();
       });
+  }
+
+  ngOnDestroy(): void {
+    // Unsubscribe from all subscriptions
+    this.unsubscribeAll.next(null);
+    this.unsubscribeAll.complete();
   }
 
   onToggleTerms(acceptTerms?: boolean): boolean {
     if (acceptTerms !== undefined) {
-      this.registerForm.get('terms').setValue(acceptTerms);
+      this.signUpForm.get('terms').setValue(acceptTerms);
     }
     this.hideTerms = !this.hideTerms;
     return false;
   }
 
-  onUserRegister() {
-    this.auth.registerWithEmail(
-      this.registerForm.value.name,
-      this.registerForm.value.email,
-      this.registerForm.value.password
+  onUserSignUp() {
+    this.auth.signUpWithEmail(
+      this.signUpForm.value.name,
+      this.signUpForm.value.email,
+      this.signUpForm.value.password
     );
   }
 }

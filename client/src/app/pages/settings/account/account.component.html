@@ -2,7 +2,6 @@
 
     <!-- Form -->
     <form [formGroup]="accountForm">
-
         <!-- Section -->
         <div class="w-full">
             <div class="text-xl">Profile</div>
@@ -21,6 +20,19 @@
                         {{validation.message}}</span>
                 </p>
             </section>
+
+            <!-- Email -->
+            <section class="sm:col-span-4 space-y-1 mb-8">
+                <label class="block text-sm font-medium text-gray-700">Email</label>
+                <input id="email" [formControlName]="'email'"
+                    class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                <p *ngFor="let validation of formValidation.email">
+                    <span *ngIf="accountForm.get('email').hasError(validation.type) && 
+                          (accountForm.get('email').dirty || 
+                          accountForm.get('email').touched)" class="mt-2 text-sm text-red-600">
+                        {{validation.message}}</span>
+                </p>
+            </section>
         </div>
 
         <!-- Divider -->
@@ -28,10 +40,11 @@
 
         <!-- Actions -->
         <div class="flex items-center justify-end">
-            <button mat-stroked-button type="button">
+            <button mat-stroked-button type="button" (click)="onCancelSave()">
                 Cancel
             </button>
-            <button class="ml-4" mat-flat-button type="button" [color]="'primary'">Save
+            <button class="ml-4" mat-flat-button type="button" [color]="'primary'" (click)="onSaveAccount()"
+                [disabled]="accountForm.invalid">Save
             </button>
         </div>
     </form>

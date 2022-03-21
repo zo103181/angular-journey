@@ -14,7 +14,7 @@ export class HttpsInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401) {
-          // Attempt to refresh the current token, however if that fails redirect to login
+          // Attempt to refresh the current token, however if that fails redirect to sign in
           console.log('http-interceptor:', error);
           return throwError(error);
         } else {

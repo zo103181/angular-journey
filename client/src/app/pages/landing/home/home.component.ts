@@ -12,9 +12,8 @@ export class LandingHomeComponent {
         private router: Router
     ) { }
 
-    goToLogin() {
-        // routes the user to login page
-        this.router.navigate(['auth/login']);
+    goToSignIn() {
+        this.router.navigate(['auth/sign-in']);
     }
 
 }

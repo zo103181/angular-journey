@@ -1,10 +1,12 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatDrawer } from '@angular/material/sidenav';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 import { LayoutService } from '../../shared/services/layout.service';
+import { UserService } from 'src/app/core/user/user.service';
 import { CustomBreakpointNames } from '../../shared/services/breakpoints.service';
 import { Panel } from 'src/app/core/models/panel.interface';
+import { User } from '../../core/models/user.interface';
 
 @Component({
     selector: 'settings',
@@ -18,15 +20,25 @@ export class SettingsComponent implements OnInit, OnDestroy {
     drawerOpened: boolean = false;
     panels: Panel[] = [];
     selectedPanel: string = 'account';
-    private _unsubscribeAll = new Subject<any>();
+    user: User;
+    private unsubscribeAll = new Subject<any>();
 
     constructor(
         private layoutService: LayoutService,
-        private changeDetectorRef: ChangeDetectorRef
+        private changeDetectorRef: ChangeDetectorRef,
+        private userService: UserService
     ) { }
 
     ngOnInit(): void {
         // Setup available panels
+        this.userService.user$
+            .pipe(takeUntil(this.unsubscribeAll))
+            .subscribe((user: User) => {
+                this.user = user;
+                // Mark for check
+                this.changeDetectorRef.markForCheck();
+            });
+
         this.panels = [
             {
                 id: 'account',
@@ -72,8 +84,8 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
     ngOnDestroy(): void {
         // Unsubscribe from all subscriptions
-        this._unsubscribeAll.next(null);
-        this._unsubscribeAll.complete();
+        this.unsubscribeAll.next(null);
+        this.unsubscribeAll.complete();
     }
 
     goToPanel(panel: string): void {
