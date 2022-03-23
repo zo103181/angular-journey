@@ -36,6 +36,11 @@ export class AuthService {
         this.verifyUserRedirect();
     }
 
+    get isLoggedIn(): boolean {
+        const user = JSON.parse(localStorage.getItem('user'));
+        return user !== null;
+    }
+
     async signInWithEmail(email: string, password: string): Promise<void> {
         await signInWithEmailAndPassword(
             this.auth,
@@ -140,7 +145,6 @@ export class AuthService {
 
         await getRedirectResult(this.auth).then(auth => {
             // user property exists; this was a redirect
-            console.log('auth', auth);
             if (auth) {
                 firstValueFrom(
                     this.userService.update(auth.user)
