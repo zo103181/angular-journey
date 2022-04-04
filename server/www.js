@@ -21,11 +21,13 @@ app.use(express.urlencoded({ extended: true }));
 
 const {
   apiHealth,
+  apiVehicles,
   apiUsers,
 } = require("./api")
 
 app.use(
   apiHealth,
+  apiVehicles,
   apiUsers,
 )
 

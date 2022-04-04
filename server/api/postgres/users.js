@@ -10,14 +10,14 @@ router.get(`/api/user/:uid`, (req, res) => {
 
         const { rows } = await pool.query(
             `SELECT 
-            id,
-            uid, 
-            displayname, 
-            email, 
-            emailverified, 
-            photourl,
-            coverphotourl
-        FROM public.users WHERE uid = $1`,
+                user_id,
+                uid, 
+                displayname, 
+                email, 
+                emailverified, 
+                photourl,
+                coverphotourl
+            FROM public.users WHERE uid = $1`,
             [uid]);
 
         if (rows.length !== 1) {
@@ -34,7 +34,7 @@ router.get(`/api/user/:uid`, (req, res) => {
             };
 
             req.session.user = {
-                id: rows[0].id,
+                id: rows[0].user_id,
                 uid: rows[0].uid
             };
 
