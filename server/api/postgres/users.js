@@ -21,10 +21,11 @@ router.get(`/api/user/:uid`, (req, res) => {
             [uid]);
 
         if (rows.length !== 1) {
-            request.session.user = null;
+            req.session.user = null;
             res.status(500).json("Could not find this user");
         } else {
             const user = {
+                'id': rows[0].user_id,
                 'uid': rows[0].uid,
                 'email': rows[0].email,
                 'photoURL': rows[0].photourl,
@@ -71,7 +72,7 @@ router.post(`/api/user`, (req, res) => {
                                 email = EXCLUDED.email,
                                 emailverified = EXCLUDED.emailverified,
                                 photourl = EXCLUDED.photourl
-                  RETURNING uid, displayname, email, emailverified, photourl`,
+                  RETURNING user_id, uid, displayname, email, emailverified, photourl`,
                     values: [uid, displayName, email, emailVerified, photoURL]
                 }
             } else {
@@ -87,15 +88,22 @@ router.post(`/api/user`, (req, res) => {
                                 email = EXCLUDED.email,
                                 emailverified = EXCLUDED.emailverified,
                                 photourl = EXCLUDED.photourl
-                  RETURNING uid, displayname, email, emailverified, photourl`,
+                  RETURNING user_id, uid, displayname, email, emailverified, photourl`,
                     values: [uid, email, emailVerified, photoURL]
                 }
             }
 
             let results = await client.query(query);
             if (results.rowCount === 1) {
+                const user_id = results.rows[0].user_id;
+                const user_uid = results.rows[0].uid;
+                req.session.user = {
+                    id: user_id,
+                    uid: user_uid
+                };
+
                 results = {
-                    uid, displayName, email, emailVerified, photoURL
+                    id: user_id, uid, displayName, email, emailVerified, photoURL
                 };
             }
 

@@ -7,7 +7,8 @@
             </div>
             <div class="ml-4 mt-2 flex-shrink-0">
                 <button type="button"
-                    class="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">New</button>
+                    class="relative inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    (click)="createVehicle(null)">New</button>
             </div>
         </div>
     </section>
@@ -26,7 +27,7 @@
                     <mat-icon class="h-6 w-6 text-gray-400" [svgIcon]="'heroicons_outline:dots-vertical'"></mat-icon>
                 </button>
                 <mat-menu [xPosition]="'before'" #postCardMenu="matMenu">
-                    <button mat-menu-item>
+                    <button mat-menu-item (click)="deleteVehicle(v)">
                         <span class="flex items-center">
                             <mat-icon class="h-6 w-6" [svgIcon]="'heroicons_outline:trash'"></mat-icon>
                             <span>Delete</span>
@@ -36,11 +37,11 @@
             </div>
             <mat-divider></mat-divider>
             <div class="flex items-center mx-3 sm:mx-5 my-2 sm:my-3 text-gray-500">
-                <button class="px-3 mr-1" mat-button [routerLink]="['./']">
+                <button class="px-3 mr-1" mat-button (click)="editVehicle(v)">
                     <mat-icon class="h-6 w-6 mr-2" [svgIcon]="'heroicons_outline:pencil-alt'"></mat-icon>
                     <span>Edit</span>
                 </button>
-                <button class="px-3 mr-1" mat-button [routerLink]="['./']">
+                <button class="px-3 mr-1" mat-button (click)="updateVehicle(v)">
                     <mat-icon class="h-6 w-6 mr-2" [svgIcon]="'heroicons_outline:receipt-tax'"></mat-icon>
                     <span>Fuel</span>
                 </button>

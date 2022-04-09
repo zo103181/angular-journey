@@ -8,31 +8,37 @@ router.get(`/api/vehicles/:user_uid`, (req, res) => {
     const { user_uid } = req.params;
 
     if (!req.session.user) { return res.status(401).json() }
-    if (req.session.user.uid !== user_uid) { return res.status(403).json() }
 
     ; (async () => {
         const { rows } = await pool.query(
-            `SELECT 
-                vehicle_id,
-                "year",
-                manufacturer,
-                model,
-                color,
-                bodystyle,
-                interior,
-                engine,
-                transmission,
-                drivetrain,
-                nickname,
-                purchase_date,
-                purchase_price,
-                purchase_mileage,
-                sold_date,
-                sold_price,
-                sold_mileage,
-                vin
-            FROM public.vehicles WHERE user_id = $1`,
-            [req.session.user.id]);
+            `SELECT
+                v.vehicle_id,
+                v.user_id,
+                v."year",
+                v.manufacturer,
+                v.model,
+                v.color,
+                v.bodystyle,
+                v.motor,
+                v.motor_type,
+                v.transmission,
+                v.drivetrain,
+                v.interior,
+                v.nickname,
+                v.purchase_date,
+                v.purchase_price,
+                v.purchase_mileage,
+                v.sold_date,
+                v.sold_price,
+                v.sold_mileage,
+                v.vin
+            FROM
+                public.vehicles v
+            INNER JOIN public.users u on
+                u.user_id = v.user_id
+            WHERE
+                u.uid = $1 ORDER BY purchase_date DESC`,
+            [user_uid]);
 
         res.json(rows);
     })().catch(err => {
@@ -45,33 +51,39 @@ router.get(`/api/vehicle/:vehicle_id`, (req, res) => {
         const { vehicle_id } = req.params;
 
         const { rows } = await pool.query(
-            `SELECT 
-                vehicle_id,
-                user_id,
-                "year",
-                manufacturer,
-                model,
-                color,
-                bodystyle,
-                interior,
-                engine,
-                transmission,
-                drivetrain,
-                nickname,
-                purchase_date,
-                purchase_price,
-                purchase_mileage,
-                sold_date,
-                sold_price,
-                sold_mileage,
-                vin
-            FROM public.vehicles WHERE vehicle_id = $1`,
+            `SELECT
+                v.vehicle_id,
+                v.user_id,
+                v."year",
+                v.manufacturer,
+                v.model,
+                v.color,
+                v.bodystyle,
+                v.motor,
+                v.motor_type,
+                v.transmission,
+                v.drivetrain,
+                v.interior,
+                v.nickname,
+                v.purchase_date,
+                v.purchase_price,
+                v.purchase_mileage,
+                v.sold_date,
+                v.sold_price,
+                v.sold_mileage,
+                v.vin
+            FROM
+                public.vehicles v
+            INNER JOIN public.users u on
+                u.user_id = v.user_id
+            WHERE
+                v.vehicle_id = $1`,
             [vehicle_id]);
 
         if (rows.length === 0) {
             res.status(404).json();
         } else {
-            res.json(rows);
+            res.json(rows[0]);
         }
     })().catch(err => {
         res.status(500).json(err.message);
@@ -88,10 +100,11 @@ router.post(`/api/vehicle`, (req, res) => {
         model,
         color,
         bodystyle,
-        interior,
-        engine,
+        motor,
+        motor_type,
         transmission,
         drivetrain,
+        interior,
         nickname,
         purchase_date,
         purchase_price,
@@ -101,6 +114,8 @@ router.post(`/api/vehicle`, (req, res) => {
         sold_mileage,
         vin
     } = req.body;
+
+    if (req.session.user.id != user_id) { return res.status(403).json() }
 
     ; (async () => {
         const client = await pool.connect();
@@ -114,10 +129,11 @@ router.post(`/api/vehicle`, (req, res) => {
                             model,
                             color,
                             bodystyle,
-                            interior,
-                            engine,
+                            motor,
+                            motor_type,
                             transmission,
                             drivetrain,
+                            interior,
                             nickname,
                             purchase_date,
                             purchase_price,
@@ -126,18 +142,19 @@ router.post(`/api/vehicle`, (req, res) => {
                             sold_price,
                             sold_mileage,
                             vin
-                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) 
+                        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19) 
                         RETURNING vehicle_id,
                                   user_id, 
                                   year, 
                                   manufacturer, 
                                   model, 
                                   color, 
-                                  bodystyle, 
-                                  interior, 
-                                  engine, 
+                                  bodystyle,
+                                  motor,
+                                  motor_type,
                                   transmission, 
                                   drivetrain, 
+                                  interior,  
                                   nickname, 
                                   purchase_date, 
                                   purchase_price, 
@@ -153,10 +170,11 @@ router.post(`/api/vehicle`, (req, res) => {
                     model,
                     color,
                     bodystyle,
-                    interior,
-                    engine,
+                    motor,
+                    motor_type,
                     transmission,
                     drivetrain,
+                    interior,
                     nickname,
                     purchase_date,
                     purchase_price,
@@ -169,7 +187,7 @@ router.post(`/api/vehicle`, (req, res) => {
             };
 
             let results = await client.query(query);
-            res.status(201).json(results.rows);
+            res.status(201).json(results.rows[0]);
         } finally {
             // Make sure to release the client before any error handling,
             // just in case the error handling itself throws an error.
@@ -185,16 +203,17 @@ router.put(`/api/vehicle`, (req, res) => {
 
     const {
         vehicle_id,
-        user_uid,
+        user_id,
         year,
         manufacturer,
         model,
         color,
         bodystyle,
-        interior,
-        engine,
+        motor,
+        motor_type,
         transmission,
         drivetrain,
+        interior,
         nickname,
         purchase_date,
         purchase_price,
@@ -205,7 +224,7 @@ router.put(`/api/vehicle`, (req, res) => {
         vin
     } = req.body;
 
-    if (req.session.user.uid !== user_uid) { return res.status(403).json() }
+    if (req.session.user.id != user_id) { return res.status(403).json() }
 
     let query = {
         text: ``,
@@ -220,29 +239,31 @@ router.put(`/api/vehicle`, (req, res) => {
             model = $5, 
             color = $6, 
             bodystyle = $7,
-            interior = $8, 
-            engine = $9, 
+            motor = $8,
+            motor_type = $9,
             transmission = $10, 
             drivetrain = $11, 
-            nickname = $12, 
-            purchase_date = $13, 
-            purchase_price = $14, 
-            purchase_mileage = $15, 
-            sold_date = $16, 
-            sold_price = $17, 
-            sold_mileage = $18, 
-            vin = $19
-        WHERE vehicle_id = $1 AND user_id = (SELECT user_id FROM public.users WHERE uid = $2)
+            interior = $12, 
+            nickname = $13, 
+            purchase_date = $14, 
+            purchase_price = $15, 
+            purchase_mileage = $16, 
+            sold_date = $17, 
+            sold_price = $18, 
+            sold_mileage = $19, 
+            vin = $20
+        WHERE vehicle_id = $1 AND user_id = $2
         RETURNING vehicle_id,
                   year,
                   manufacturer,
                   model,
                   color,
                   bodystyle,
-                  interior,
-                  engine,
+                  motor,
+                  motor_type,
                   transmission,
                   drivetrain,
+                  interior,
                   nickname,
                   purchase_date,
                   purchase_price,
@@ -253,16 +274,17 @@ router.put(`/api/vehicle`, (req, res) => {
                   vin`,
         values: [
             vehicle_id,
-            user_uid,
+            user_id,
             year,
             manufacturer,
             model,
             color,
             bodystyle,
-            interior,
-            engine,
+            motor,
+            motor_type,
             transmission,
             drivetrain,
+            interior,
             nickname,
             purchase_date,
             purchase_price,
@@ -309,7 +331,7 @@ router.delete(`/api/vehicle`, (req, res) => {
             await client.query("COMMIT");
 
             if (results.rowCount > 0) {
-                res.status(200).json({ "vehicle_id": vehicle_id });
+                res.status(200).json(vehicle_id);
             } else {
                 res.status(404).json();
             }
