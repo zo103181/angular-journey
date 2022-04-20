@@ -17,7 +17,7 @@ export class VehicleService {
 
     sortVehicles(vehicles: Vehicle[]) {
         return vehicles.sort((a, b) => {
-            return this.cmp(b.purchase_date, a.purchase_date) || this.cmp(a.manufacturer, b.manufacturer) || this.cmp(b.year, a.year);
+            return this.cmp(a.manufacturer, b.manufacturer) || this.cmp(b.year, a.year);
         });
     }
 
