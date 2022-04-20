@@ -186,6 +186,12 @@
                         <label class="block text-sm font-medium text-gray-700">Year</label>
                         <input id="year" [formControlName]="'year'"
                             class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <p *ngFor="let validation of formValidation.year">
+                            <span *ngIf="vehicleForm.get('year').hasError(validation.type) && 
+                                        (vehicleForm.get('year').dirty || 
+                                        vehicleForm.get('year').touched)" class="mt-2 text-sm text-red-600">
+                                {{validation.message}}</span>
+                        </p>
                     </section>
 
                     <!-- Manufacturer Field -->
@@ -193,6 +199,13 @@
                         <label class="block text-sm font-medium text-gray-700">Manufacturer</label>
                         <input id="manufacturer" [formControlName]="'manufacturer'"
                             class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <p *ngFor="let validation of formValidation.manufacturer">
+                            <span *ngIf="vehicleForm.get('manufacturer').hasError(validation.type) && 
+                                            (vehicleForm.get('manufacturer').dirty || 
+                                            vehicleForm.get('manufacturer').touched)"
+                                class="mt-2 text-sm text-red-600">
+                                {{validation.message}}</span>
+                        </p>
                     </section>
 
                     <!-- Model Field -->
@@ -200,6 +213,12 @@
                         <label class="block text-sm font-medium text-gray-700">Model</label>
                         <input id="model" [formControlName]="'model'"
                             class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        <p *ngFor="let validation of formValidation.model">
+                            <span *ngIf="vehicleForm.get('model').hasError(validation.type) && 
+                                            (vehicleForm.get('model').dirty || 
+                                            vehicleForm.get('model').touched)" class="mt-2 text-sm text-red-600">
+                                {{validation.message}}</span>
+                        </p>
                     </section>
 
                     <!-- Color Field -->

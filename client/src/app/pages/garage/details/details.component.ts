@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 
 import * as moment from 'moment';
@@ -24,10 +24,15 @@ export class VehiclesDetailsComponent implements OnInit, OnDestroy {
     vehicleForm: FormGroup;
     vehicle: Vehicle;
 
+    formValidation = {
+        year: [{ type: 'required', message: 'Year is required' }],
+        manufacturer: [{ type: 'required', message: 'Manufacturer is required' }],
+        model: [{ type: 'required', message: 'Model is required' }]
+    };
+
     private unsubscribeAll = new Subject<any>();
 
     constructor(
-        private activatedRoute: ActivatedRoute,
         private changeDetectorRef: ChangeDetectorRef,
         private formBuilder: FormBuilder,
         private router: Router,
@@ -43,7 +48,7 @@ export class VehiclesDetailsComponent implements OnInit, OnDestroy {
         this.vehicleForm = this.formBuilder.group({
             vehicle_id: [''],
             user_id: [''],
-            year: ['', [Validators.required, Validators.minLength(4)]],
+            year: ['', [Validators.required]],
             manufacturer: ['', [Validators.required]],
             model: ['', [Validators.required]],
             color: [''],
