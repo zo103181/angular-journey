@@ -15,6 +15,12 @@ export class VehicleService {
         return 0;
     }
 
+    sortVehicles(vehicles: Vehicle[]) {
+        return vehicles.sort((a, b) => {
+            return this.cmp(b.purchase_date, a.purchase_date) || this.cmp(a.manufacturer, b.manufacturer) || this.cmp(b.year, a.year);
+        });
+    }
+
     constructor(
         private httpClient: HttpClient
     ) { }
@@ -22,7 +28,7 @@ export class VehicleService {
     loadVehicles(user_uid: string): Observable<Vehicle[]> {
         return this.httpClient.get<Vehicle[]>(`/api/vehicles/${user_uid}`).pipe(
             tap((vehicles) => {
-                this.vehicles$.next(vehicles);
+                this.vehicles$.next(this.sortVehicles(vehicles));
             })
         );
     }
@@ -80,9 +86,7 @@ export class VehicleService {
             switchMap(vehicles => this.httpClient.post<Vehicle>(`/api/vehicle`, vehicle).pipe(
                 catchError(response => { throw new Error(`Error: ${response.error}`) }),
                 map((newVehicle) => {
-                    this.vehicles$.next([...vehicles, newVehicle].sort((a, b) => {
-                        return this.cmp(a.manufacturer, b.manufacturer) || this.cmp(b.year, a.year);
-                    }));
+                    this.vehicles$.next(this.sortVehicles([...vehicles, newVehicle]));
                     return newVehicle;
                 })
             ))
@@ -97,9 +101,7 @@ export class VehicleService {
             take(1),
             switchMap(vehicles => this.httpClient.put<Vehicle>(`/api/vehicle`, vehicle).pipe(
                 catchError(response => { throw new Error(`Error: ${response.error}`) }),
-                map(() => [...vehicles.filter((row: Vehicle) => row.vehicle_id !== vehicle.vehicle_id), vehicle].sort((a, b) => {
-                    return this.cmp(a.manufacturer, b.manufacturer) || this.cmp(b.year, a.year);
-                }))
+                map(() => this.sortVehicles([...vehicles.filter((row: Vehicle) => row.vehicle_id !== vehicle.vehicle_id), vehicle]))
             ))
         ).subscribe((vehicles) => {
             this.vehicle$.next(vehicle);
@@ -113,9 +115,7 @@ export class VehicleService {
             take(1),
             switchMap(vehicles => this.httpClient.delete<string>(`/api/vehicle`, { body: { vehicle_id, user_uid } }).pipe(
                 catchError(response => { throw new Error(`Error: ${response.error}`) }),
-                map(() => [...vehicles.filter((row: Vehicle) => row.vehicle_id !== vehicle_id)].sort((a, b) => {
-                    return this.cmp(a.manufacturer, b.manufacturer) || this.cmp(b.year, a.year);
-                }))
+                map(() => this.sortVehicles([...vehicles.filter((row: Vehicle) => row.vehicle_id !== vehicle_id)]))
             ))
         ).subscribe((vehicles) => {
             this.vehicle$.next(null);
