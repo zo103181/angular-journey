@@ -37,7 +37,7 @@ router.get(`/api/vehicles/:user_uid`, (req, res) => {
             INNER JOIN public.users u on
                 u.user_id = v.user_id
             WHERE
-                u.uid = $1 ORDER BY purchase_date DESC`,
+                u.uid = $1 ORDER BY v.manufacturer ASC`,
             [user_uid]);
 
         res.json(rows);
@@ -254,6 +254,7 @@ router.put(`/api/vehicle`, (req, res) => {
             vin = $20
         WHERE vehicle_id = $1 AND user_id = $2
         RETURNING vehicle_id,
+                  user_id,
                   year,
                   manufacturer,
                   model,
@@ -298,7 +299,7 @@ router.put(`/api/vehicle`, (req, res) => {
 
     pool.query(query, (error, results) => {
         if (error) {
-            response.status(500).json('Unknown Error: SQL Query');
+            res.status(500).json('Unknown Error: SQL Query');
             return console.error("Error executing query", error.stack);
         }
         res.status(200).json(results.rows);

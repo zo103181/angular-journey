@@ -1,0 +1,351 @@
+<div class="flex flex-col w-full" *ngIf="vehicle">
+
+    <!-- View Mode -->
+    <ng-container *ngIf="!editMode">
+
+        <!-- Header -->
+        <div class="relative w-full h-40 sm:h-48 px-8 sm:px-12 bg-gray-400">
+            <!-- Background -->
+            <!-- <ng-container *ngIf="contact.background">
+                <img class="absolute inset-0 object-cover w-full h-full" [src]="contact.background">
+            </ng-container> -->
+            <!-- Close button -->
+            <div class="flex items-center justify-end w-full max-w-3xl mx-auto pt-6">
+                <button mat-icon-button [matTooltip]="'Close'" [routerLink]="['../../']"
+                    class="text-white hover:bg-gray-300">
+                    <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                </button>
+            </div>
+        </div>
+
+        <div class="relative flex flex-col flex-auto items-center p-6 pt-0 sm:p-12 sm:pt-0">
+            <div class="w-full max-w-3xl">
+
+                <!-- Avatar and Actions -->
+                <div class="flex flex-auto items-end -mt-16">
+                    <!-- Avatar -->
+                    <div class="flex items-center justify-center w-32 h-32 rounded-full overflow-hidden">
+                        <div
+                            class="flex items-center justify-center w-full h-full rounded overflow-hidden uppercase text-6xl font-bold leading-none bg-gray-200 text-gray-600">
+                            {{vehicle.model.charAt(0)}}
+                        </div>
+                    </div>
+                    <!-- Actions -->
+                    <div class="flex items-center ml-auto mb-1">
+                        <button mat-stroked-button (click)="toggleEditMode(true)">
+                            <mat-icon class="h-5 w-5 text-gray-400" [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
+                            <span class="ml-2">Edit</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Vehicle -->
+                <div class="mt-4 text-3xl font-bold truncate">
+                    {{ vehicle.year }} {{ vehicle.model }}
+                </div>
+                <div class="text-gray-400">{{ vehicle.manufacturer }}</div>
+
+                <div class="flex flex-col mt-4 pt-6 border-t space-y-8 text-gray-600">
+                    <ng-container *ngIf="vehicle.color">
+                        <div class="flex sm:items-center">
+                            <b>Color</b>
+                            <div class="ml-6 leading-6">{{vehicle.color}}</div>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="vehicle.bodystyle">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
+                            <div class="ml-6 leading-6">{{vehicle.bodystyle}}</div>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="vehicle.interior">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
+                            <div class="ml-6 leading-6">{{vehicle.interior}}</div>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="vehicle.motor">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
+                            <div class="ml-6 leading-6">{{vehicle.motor}}</div>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="vehicle.motor_type">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
+                            <div class="ml-6 leading-6">{{vehicle.motor_type}}</div>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="vehicle.transmission">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
+                            <div class="ml-6 leading-6">{{vehicle.transmission}}</div>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="vehicle.drivetrain">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
+                            <div class="ml-6 leading-6">{{vehicle.drivetrain}}</div>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="vehicle.purchase_date">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
+                            <div class="ml-6 leading-6">{{vehicle.purchase_date}}</div>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="vehicle.purchase_price">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
+                            <div class="ml-6 leading-6">{{vehicle.purchase_price}}</div>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="vehicle.purchase_mileage">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
+                            <div class="ml-6 leading-6">{{vehicle.purchase_mileage}}</div>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="vehicle.sold_date">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
+                            <div class="ml-6 leading-6">{{vehicle.sold_date}}</div>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="vehicle.sold_price">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
+                            <div class="ml-6 leading-6">{{vehicle.sold_price}}</div>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="vehicle.sold_mileage">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
+                            <div class="ml-6 leading-6">{{vehicle.sold_mileage}}</div>
+                        </div>
+                    </ng-container>
+
+                    <ng-container *ngIf="vehicle.vin">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
+                            <div class="ml-6 leading-6">{{vehicle.vin}}</div>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+        </div>
+
+    </ng-container>
+
+    <!-- Edit Mode -->
+    <ng-container *ngIf="editMode">
+        <!-- Header -->
+        <div class="relative w-full h-40 sm:h-48 px-8 sm:px-12 bg-gray-400">
+            <!-- Background -->
+            <!-- <ng-container *ngIf="contact.background">
+                        <img class="absolute inset-0 object-cover w-full h-full" [src]="contact.background">
+                    </ng-container> -->
+            <!-- Close button -->
+            <div class="flex items-center justify-end w-full max-w-3xl mx-auto pt-6">
+                <button mat-icon-button [matTooltip]="'Close'" [routerLink]="['../../']"
+                    class="text-white hover:bg-gray-300">
+                    <mat-icon [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                </button>
+            </div>
+        </div>
+
+        <div class="relative flex flex-col flex-auto items-center p-6 pt-0 sm:p-12 sm:pt-0">
+            <div class="w-full max-w-3xl">
+
+                <form [formGroup]="vehicleForm">
+                    <!-- Avatar and Actions -->
+                    <div class="flex flex-auto items-end -mt-16">
+                        <!-- Avatar -->
+                        <div class="flex items-center justify-center w-32 h-32 rounded-full overflow-hidden">
+                            <div
+                                class="flex items-center justify-center w-full h-full rounded overflow-hidden uppercase text-6xl font-bold leading-none bg-gray-200 text-gray-600">
+                                {{vehicle.model.charAt(0)}}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Year Field -->
+                    <section class="w-full space-y-1 mt-4">
+                        <label class="block text-sm font-medium text-gray-700">Year</label>
+                        <input id="year" [formControlName]="'year'"
+                            class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </section>
+
+                    <!-- Manufacturer Field -->
+                    <section class="w-full space-y-1 mt-4">
+                        <label class="block text-sm font-medium text-gray-700">Manufacturer</label>
+                        <input id="manufacturer" [formControlName]="'manufacturer'"
+                            class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </section>
+
+                    <!-- Model Field -->
+                    <section class="w-full space-y-1 mt-4">
+                        <label class="block text-sm font-medium text-gray-700">Model</label>
+                        <input id="model" [formControlName]="'model'"
+                            class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </section>
+
+                    <!-- Color Field -->
+                    <section class="w-full space-y-1 mt-4">
+                        <label class="block text-sm font-medium text-gray-700">Color</label>
+                        <input id="color" [formControlName]="'color'"
+                            class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </section>
+
+                    <!-- Body Style Field -->
+                    <section class="w-full space-y-1 mt-4">
+                        <label class="block text-sm font-medium text-gray-700">Body Style</label>
+                        <input id="bodystyle" [formControlName]="'bodystyle'"
+                            class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </section>
+
+                    <!-- Motor Field -->
+                    <section class="w-full space-y-1 mt-4">
+                        <label class="block text-sm font-medium text-gray-700">Motor</label>
+                        <input id="motor" [formControlName]="'motor'"
+                            class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </section>
+
+                    <!-- Motor Type Field -->
+                    <section class="w-full space-y-1 mt-4">
+                        <label class="block text-sm font-medium text-gray-700">Motor Type</label>
+                        <input id="motor_type" [formControlName]="'motor_type'"
+                            class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </section>
+
+                    <!-- Transmission Field -->
+                    <section class="w-full space-y-1 mt-4">
+                        <label class="block text-sm font-medium text-gray-700">Transmission</label>
+                        <input id="transmission" [formControlName]="'transmission'"
+                            class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </section>
+
+                    <!-- Drivetrain Field -->
+                    <section class="w-full space-y-1 mt-4">
+                        <label class="block text-sm font-medium text-gray-700">Drivetrain</label>
+                        <input id="drivetrain" [formControlName]="'drivetrain'"
+                            class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </section>
+
+                    <!-- Interior Field -->
+                    <section class="w-full space-y-1 mt-4">
+                        <label class="block text-sm font-medium text-gray-700">Interior</label>
+                        <input id="interior" [formControlName]="'interior'"
+                            class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </section>
+
+                    <!-- Nickname Field -->
+                    <section class="w-full space-y-1 mt-4">
+                        <label class="block text-sm font-medium text-gray-700">Nickname</label>
+                        <input id="nickname" [formControlName]="'nickname'"
+                            class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </section>
+
+                    <!-- Purchase Date Field -->
+                    <section class="w-full space-y-1 mt-4">
+                        <label for="purchase_date" class="block text-sm font-medium text-gray-700">Purchase Date</label>
+                        <div class="mt-1 relative rounded-md shadow-sm">
+                            <input type="text" name="purchase_date" id="purchase_date"
+                                [formControlName]="'purchase_date'" [matDatepicker]="purchase_datepicker"
+                                class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <div class="absolute inset-y-0 right-0 flex items-center text-gray-400 pointer-events-auto">
+                                <button mat-icon-button (click)="purchase_datepicker.open()">
+                                    <mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
+                                </button>
+                            </div>
+                            <mat-datepicker #purchase_datepicker></mat-datepicker>
+                        </div>
+                    </section>
+
+                    <!-- Purchase Price Field -->
+                    <section class="w-full space-y-1 mt-4">
+                        <label class="block text-sm font-medium text-gray-700">Purchase Price</label>
+                        <input id="purchase_price" [formControlName]="'purchase_price'"
+                            class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </section>
+
+                    <!-- Purchase Mileage Field -->
+                    <section class="w-full space-y-1 mt-4">
+                        <label class="block text-sm font-medium text-gray-700">Purchase Mileage</label>
+                        <input id="purchase_mileage" [formControlName]="'purchase_mileage'"
+                            class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </section>
+
+                    <section class="w-full space-y-1 mt-4">
+                        <label for="sold_date" class="block text-sm font-medium text-gray-700">Sold Date</label>
+                        <div class="mt-1 relative rounded-md shadow-sm">
+                            <input type="text" name="sold_date" id="sold_date" [formControlName]="'sold_date'"
+                                [matDatepicker]="sold_datepicker"
+                                class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <div class="absolute inset-y-0 right-0 flex items-center text-gray-400 pointer-events-auto">
+                                <button mat-icon-button (click)="sold_datepicker.open()">
+                                    <mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
+                                </button>
+                            </div>
+                            <mat-datepicker #sold_datepicker></mat-datepicker>
+                        </div>
+                    </section>
+
+                    <!-- Sold Price Field -->
+                    <section class="w-full space-y-1 mt-4">
+                        <label class="block text-sm font-medium text-gray-700">Sold Price</label>
+                        <input id="sold_price" [formControlName]="'sold_price'"
+                            class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </section>
+
+                    <!-- Sold Mileage Field -->
+                    <section class="w-full space-y-1 mt-4">
+                        <label class="block text-sm font-medium text-gray-700">Sold Mileage</label>
+                        <input id="sold_mileage" [formControlName]="'sold_mileage'"
+                            class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </section>
+
+                    <!-- VIN Field -->
+                    <section class="w-full space-y-1 mt-4">
+                        <label class="block text-sm font-medium text-gray-700">VIN</label>
+                        <input id="vin" [formControlName]="'vin'"
+                            class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </section>
+
+                    <!-- Actions -->
+                    <div
+                        class="flex items-center mt-10 -mx-6 sm:-mx-12 py-4 pr-4 pl-1 sm:pr-12 sm:pl-7 border-t bg-gray-50 dark:bg-transparent">
+                        <!-- Delete -->
+                        <button mat-button [color]="'warn'" [matTooltip]="'Delete'"
+                            *ngIf="vehicleForm.value.vehicle_id !== ''" (click)="onDelete(vehicleForm.value)">
+                            Delete
+                        </button>
+                        <!-- Cancel -->
+                        <button class="ml-auto" mat-button [matTooltip]="'Cancel'"
+                            (click)="onCancel(vehicleForm.value)">
+                            Cancel
+                        </button>
+                        <!-- Save -->
+                        <button class="ml-2" mat-flat-button [color]="'primary'" [matTooltip]="'Save'"
+                            (click)="onSave(vehicleForm.value)" [disabled]="vehicleForm.invalid">
+                            Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </ng-container>
+</div>
