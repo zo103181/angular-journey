@@ -31,17 +31,17 @@ export class SideNavigationLayoutComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         // Setup available panels
         switch (true) {
-            case this.router.url.includes('/dashboard'):
-                this.selectedPanel = 'dashboard'
+            case this.router.url.includes('/garage'):
+                this.selectedPanel = 'garage'
                 break;
         }
 
         this.panels = [
             {
-                id: 'dashboard',
+                id: 'garage',
                 icon: 'heroicons_outline:home',
-                title: 'Dashboard',
-                urlPath: '/dashboard'
+                title: 'Garage',
+                urlPath: '/garage'
             }
         ];
     }

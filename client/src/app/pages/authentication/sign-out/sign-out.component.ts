@@ -10,7 +10,7 @@ import { AuthService } from '../../../core/auth/authentication.service';
     templateUrl: './sign-out.component.html'
 })
 export class SignOutComponent implements OnInit, OnDestroy {
-    countdown: number = 60;
+    countdown: number = 5;
     countdownMapping: any = {
         '=1': '# second',
         'other': '# seconds'

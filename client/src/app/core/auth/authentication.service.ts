@@ -196,7 +196,7 @@ export class AuthService {
                     if (this.router.url === '/auth/sign-in' ||
                         this.router.url === '/auth/sign-up') {
                         // user logging in, so take them to default page
-                        this.router.navigate(['dashboard']);
+                        this.router.navigate(['garage']);
                     }
                     // hide the progress spinner
                     this.isLoading = false;
@@ -217,7 +217,7 @@ export class AuthService {
             if (this.router.url === '/auth/sign-in' ||
                 this.router.url === '/auth/sign-up') {
                 // user logging in, so take them to default page
-                this.router.navigate(['dashboard']);
+                this.router.navigate(['garage']);
             }
 
             // hide the progress spinner
