@@ -9,34 +9,46 @@ router.get(`/api/user/:uid`, (req, res) => {
         const { uid } = req.params;
 
         const { rows } = await pool.query(
-            `SELECT 
-                user_id,
-                uid, 
-                displayname, 
-                email, 
-                emailverified, 
-                photourl,
-                coverphotourl
-            FROM public.users WHERE uid = $1`,
+            `SELECT
+                u.user_id,
+                u.uid,
+                u.displayname,
+                u.email,
+                u.emailverified,
+                u.photourl,
+                u.coverphotourl,
+                v.vehicle_id
+            FROM
+                public.users u
+            LEFT OUTER JOIN public.vehicles v on
+                v.user_id = u.user_id WHERE uid = $1`,
             [uid]);
 
-        if (rows.length !== 1) {
+        if (rows.length === 0) {
             req.session.user = null;
             res.status(500).json("Could not find this user");
         } else {
-            const user = {
-                'id': rows[0].user_id,
-                'uid': rows[0].uid,
-                'email': rows[0].email,
-                'photoURL': rows[0].photourl,
-                'displayName': rows[0].displayname,
-                'emailVerified': rows[0].emailverified,
-                'coverPhotoURL': rows[0].coverphotourl
-            };
+            let vehicles = [];
+            let user = {};
+            rows.map(row => {
+                user['id'] = row.user_id;
+                user['uid'] = row.uid;
+                user['email'] = row.email;
+                user['photoURL'] = row.photourl;
+                user['displayName'] = row.displayname;
+                user['emailVerified'] = row.emailverified;
+                user['coverPhotoURL'] = row.coverphotourl;
+                if (row.vehicle_id) {
+                    vehicles = [...vehicles, row.vehicle_id];
+                }
+            });
+
+            user['vehicles'] = vehicles;
 
             req.session.user = {
-                id: rows[0].user_id,
-                uid: rows[0].uid
+                id: user['id'],
+                uid: user['uid'],
+                vehicles
             };
 
             res.json(user);

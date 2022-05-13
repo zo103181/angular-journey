@@ -20,12 +20,20 @@ app.use(express.urlencoded({ extended: true }));
 // app.use(express.static(__dirname + '../../../dist'));
 
 const {
+  apiFuelBrands,
+  apiFuelLogs,
+  apiFuelOctanes,
+  apiFuelStations,
   apiHealth,
   apiVehicles,
-  apiUsers,
+  apiUsers
 } = require("./api")
 
 app.use(
+  apiFuelBrands,
+  apiFuelLogs,
+  apiFuelOctanes,
+  apiFuelStations,
   apiHealth,
   apiVehicles,
   apiUsers,
