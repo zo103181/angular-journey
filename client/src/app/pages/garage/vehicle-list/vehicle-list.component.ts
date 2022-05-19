@@ -10,7 +10,7 @@ import { VehicleService } from '../../../core/vehicle/vehicle.service';
 
 @Component({
     selector: 'vehicles-list',
-    templateUrl: './list.component.html',
+    templateUrl: './vehicle-list.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })

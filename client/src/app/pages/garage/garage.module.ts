@@ -10,8 +10,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { GarageComponent } from './garage.component';
-import { VehiclesListComponent } from './list/list.component';
-import { VehiclesDetailsComponent } from './details/details.component';
+import { VehiclesListComponent } from './vehicle-list/vehicle-list.component';
+import { VehiclesDetailsComponent } from './vehicle-details/vehicle-details.component';
 import { AuthGuard } from '../../core/auth/guards/auth.guard';
 import { SharedModule } from '../../shared/shared.module';
 import { CanDeactivateVehicleDetails } from './garage.guard';

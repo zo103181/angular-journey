@@ -5,7 +5,7 @@ import { Subject, takeUntil } from 'rxjs';
 
 import * as moment from 'moment';
 
-import { VehiclesListComponent } from '../list/list.component';
+import { VehiclesListComponent } from '../vehicle-list/vehicle-list.component';
 import { VehicleService } from '../../../core/vehicle/vehicle.service';
 import { Vehicle } from '../../../core/models/vehicle.interface';
 import { MatDrawerToggleResult } from '@angular/material/sidenav';
@@ -14,7 +14,7 @@ import { UserService } from 'src/app/core/user/user.service';
 
 @Component({
     selector: 'vehicle-details',
-    templateUrl: './details.component.html',
+    templateUrl: './vehicle-details.component.html',
     encapsulation: ViewEncapsulation.None,
     changeDetection: ChangeDetectionStrategy.OnPush
 })
