@@ -33,9 +33,13 @@ export class VehicleService {
         );
     }
 
-    // getVehicleById(vehicle_id: string): Observable<Vehicle> {
-    //     return this.httpClient.get<Vehicle>(`/api/vehicle/${vehicle_id}`);
-    // }
+    getVehicleFromHttpById(vehicle_id: string): Observable<Vehicle> {
+        return this.httpClient.get<Vehicle>(`/api/vehicle/${vehicle_id}`).pipe(
+            tap((vehicle) => {
+                this.vehicle$.next(vehicle);
+            })
+        );
+    }
 
     newVehicle(): Observable<Vehicle> {
         let vehicle: Vehicle = {

@@ -4,6 +4,103 @@ const router = express.Router();
 const db = require("../../pg-pool");
 const pool = db.getPool();
 
+const formatLogResults = (rows) => {
+    return rows.map(row => {
+        return {
+            'log_id': row.log_id,
+            'purchase_date': row.purchase_date,
+            'odometer': row.odometer,
+            'gallons': row.gallons,
+            'fuel_cost': row.fuel_cost,
+            'trip': row.trip,
+            'octane': {
+                'id': row.octane_id,
+                'name': row.octane
+            },
+            'brand': {
+                'id': row.brand_id,
+                'name': row.brand
+            },
+            'station': {
+                'id': row.station_id,
+                'latitude': row.latitude,
+                'longitude': row.longitude,
+                'address': {
+                    'street': row.address,
+                    'city': row.city,
+                    'state': row.state,
+                    'zip': row.zip
+                },
+                'is_confirmed': row.is_confirmed
+            },
+            'is_partial_fill': row.is_partial_fill,
+            'is_ethonal_free': row.is_ethonal_free,
+            'is_excluded': row.is_excluded
+        }
+    });
+}
+
+const refreshFuelLogsView = async (pool, vehicle_id, user_id, rows_per_page, page) => {
+    let total_rows = 0;
+    let query = {
+        text: `WITH all_fuel_logs AS (
+                    ${querySelectFuelLogs('public.fuel_logs')}
+                    WHERE
+                        fl.vehicle_id = $1
+                        AND v.user_id = $2
+                    ORDER BY
+                        odometer DESC
+                )
+                SELECT *, count(*) OVER () AS total
+                FROM all_fuel_logs LIMIT $3 OFFSET (($4 - 1) * $3)`,
+        values: [vehicle_id, user_id, rows_per_page, page]
+    };
+
+    const { rows } = await pool.query(query);
+
+    const formatLogResults = rows.map(row => {
+        total_rows = row.total;
+        return {
+            'log_id': row.log_id,
+            'purchase_date': row.purchase_date,
+            'odometer': row.odometer,
+            'gallons': row.gallons,
+            'fuel_cost': row.fuel_cost,
+            'trip': row.trip,
+            'octane': {
+                'id': row.octane_id,
+                'name': row.octane
+            },
+            'brand': {
+                'id': row.brand_id,
+                'name': row.brand
+            },
+            'station': {
+                'id': row.station_id,
+                'latitude': row.latitude,
+                'longitude': row.longitude,
+                'address': {
+                    'street': row.address,
+                    'city': row.city,
+                    'state': row.state,
+                    'zip': row.zip
+                },
+                'is_confirmed': row.is_confirmed
+            },
+            'is_partial_fill': row.is_partial_fill,
+            'is_ethonal_free': row.is_ethonal_free,
+            'is_excluded': row.is_excluded
+        }
+    });
+
+    return {
+        'data': formatLogResults,
+        total_rows,
+        rows_per_page,
+        page
+    }
+}
+
 const resyncFuelLogs = async (client, vehicle_id, odometer) => {
     return await client.query({
         text: `WITH vehicle_fuel_logs AS
@@ -79,25 +176,40 @@ router.post(`/api/fuel/logs/search`, (req, res) => {
     } = req.body;
 
     if (!rows_per_page || !page || !user_id || !vehicle_id) { return res.status(400).json() }
-    if (user.id != user_id) { return res.status(403).json() }
+    if (user.id !== user_id) { return res.status(403).json() }
 
     ; (async () => {
-        let query = {
-            text: `WITH all_fuel_logs AS (
-                        ${querySelectFuelLogs('public.fuel_logs')}
-                        WHERE
-                            fl.vehicle_id = $1
-                            AND v.user_id = $2
-                        ORDER BY
-                            odometer DESC
-                    )
-                    SELECT *, count(*) OVER () AS total
-                    FROM all_fuel_logs LIMIT $3 OFFSET (($4 - 1) * $3)`,
-            values: [vehicle_id, user_id, rows_per_page, page]
-        }
+        const fuelLogsView = await refreshFuelLogsView(pool, vehicle_id, user_id, rows_per_page, page);
+        res.status(200).json(fuelLogsView);
+    })().catch(err => {
+        res.status(500).json(err.message);
+    });
+});
 
-        const { rows } = await pool.query(query);
-        res.status(200).json(rows)
+router.post(`/api/fuel/log`, (req, res) => {
+    const user = validateUserAuthorized(req, res);
+
+    let {
+        log_id,
+        user_id,
+        vehicle_id
+    } = req.body;
+
+    if (!log_id || !user_id || !vehicle_id) { return res.status(400).json() }
+    if (user.id !== user_id) { return res.status(403).json() }
+
+    ; (async () => {
+        const { rows } = await pool.query(
+            `${querySelectFuelLogs('public.fuel_logs')} WHERE fl.vehicle_id = $1
+                                                        AND v.user_id = $2
+                                                        AND fl.log_id = $3`,
+            [vehicle_id, user_id, log_id]);
+
+        if (rows.length === 0) {
+            res.status(404).json();
+        } else {
+            res.json(formatLogResults(rows)[0]);
+        }
     })().catch(err => {
         res.status(500).json(err.message);
     });
@@ -107,33 +219,30 @@ router.post(`/api/fuel/logs`, (req, res) => {
     const user = validateUserAuthorized(req, res);
 
     let {
+        log,
+        user_id,
         vehicle_id,
-        purchase_date,
-        gallons,
-        fuel_cost,
-        odometer,
-        octane_id,
-        brand_id,
-        station_id,
-        is_partial_fill,
-        is_ethonal_free,
-        is_excluded,
-        user_id
+        rows_per_page,
+        page
     } = req.body;
 
-    if (!vehicle_id ||
-        !purchase_date ||
-        !gallons ||
-        !fuel_cost ||
-        !odometer ||
-        !octane_id ||
-        !brand_id ||
-        !is_partial_fill ||
-        !is_ethonal_free ||
-        !is_excluded ||
-        !user_id) { return res.status(400).json() }
+    if (!log.purchase_date ||
+        !log.gallons ||
+        !log.fuel_cost ||
+        !log.odometer ||
+        !log.octane.id ||
+        !log.brand.id ||
+        !log.station.id ||
+        !log.is_partial_fill ||
+        !log.is_ethonal_free ||
+        !log.is_excluded ||
+        !user_id,
+        !vehicle_id ||
+        !rows_per_page ||
+        !page) { return res.status(400).json() }
 
     if (user.id != user_id) { return res.status(403).json() }
+    if (!user.vehicles) { return res.status(401).json() }
     if (!user.vehicles.includes(vehicle_id)) { return res.status(403).json() }
 
     let query = { text: '', values: [] };
@@ -153,7 +262,7 @@ router.post(`/api/fuel/logs`, (req, res) => {
                                     public.fuel_logs
                                 where
                                     vehicle_id = $1
-                                    and odometer < $2
+                                    and odometer <= $2
                                 order by
                                     odometer desc
                                 limit 1) as last_odometer
@@ -161,14 +270,14 @@ router.post(`/api/fuel/logs`, (req, res) => {
                                 public.vehicles v 
                             where
                                 v.vehicle_id = $1`;
-            query.values = [vehicle_id, odometer];
+            query.values = [vehicle_id, log.odometer];
             let calcTripResults = await client.query(query);
             let trip = 0;
 
             if (calcTripResults.rowCount > 0) {
                 let row = calcTripResults.rows[0];
                 let last_odometer = (row['last_odometer']) ? row['last_odometer'] : row['purchase_mileage'];
-                trip = odometer - last_odometer;
+                trip = log.odometer - last_odometer;
             } else {
                 return res.status(500).json();
             }
@@ -180,28 +289,26 @@ router.post(`/api/fuel/logs`, (req, res) => {
                                 RETURNING *) ${querySelectFuelLogs('cte_fuel_log')} WHERE fl.log_id = fl.log_id`;
             query.values = [
                 vehicle_id,
-                purchase_date,
-                gallons,
-                fuel_cost,
-                odometer,
+                log.purchase_date,
+                log.gallons,
+                log.fuel_cost,
+                log.odometer,
                 trip,
-                octane_id,
-                brand_id,
-                station_id,
-                is_partial_fill,
-                is_ethonal_free,
-                is_excluded
+                log.octane.id,
+                log.brand.id,
+                log.station.id,
+                log.is_partial_fill,
+                log.is_ethonal_free,
+                log.is_excluded
             ];
-            let updateLogResults = await client.query(query);
-            let updateTripResults = await resyncFuelLogs(client, vehicle_id, odometer);
-
+            let insertLogResults = await client.query(query);
+            await resyncFuelLogs(client, vehicle_id, log.odometer);
             await client.query("COMMIT");
 
-            if (updateLogResults.rowCount > 0) {
-                return res.status(201).json({
-                    log: updateLogResults.rows,
-                    trip: updateTripResults.rows
-                });
+            const fuelLogsView = await refreshFuelLogsView(pool, vehicle_id, user_id, rows_per_page, page);
+
+            if (insertLogResults.rowCount > 0) {
+                return res.status(201).json(fuelLogsView);
             } else {
                 return res.status(404).json();
             }
@@ -212,6 +319,7 @@ router.post(`/api/fuel/logs`, (req, res) => {
             client.release();
         }
     })().catch((error) => {
+        console.log(error)
         return res.status(500).json(error);
     });
 });
@@ -220,33 +328,28 @@ router.put(`/api/fuel/logs`, (req, res) => {
     const user = validateUserAuthorized(req, res);
 
     let {
-        log_id,
+        log,
+        user_id,
         vehicle_id,
-        purchase_date,
-        gallons,
-        fuel_cost,
-        odometer,
-        octane_id,
-        brand_id,
-        station_id,
-        is_partial_fill,
-        is_ethonal_free,
-        is_excluded,
-        user_id
+        rows_per_page,
+        page
     } = req.body;
 
-    if (!log_id ||
+    if (!log.log_id ||
+        !log.purchase_date ||
+        !log.gallons ||
+        !log.fuel_cost ||
+        !log.odometer ||
+        !log.octane.id ||
+        !log.brand.id ||
+        !log.station.id ||
+        !log.is_partial_fill ||
+        !log.is_ethonal_free ||
+        !log.is_excluded ||
+        !user_id,
         !vehicle_id ||
-        !purchase_date ||
-        !gallons ||
-        !fuel_cost ||
-        !odometer ||
-        !octane_id ||
-        !brand_id ||
-        !is_partial_fill ||
-        !is_ethonal_free ||
-        !is_excluded ||
-        !user_id) { return res.status(400).json() }
+        !rows_per_page ||
+        !page) { return res.status(400).json() }
 
     if (user.id != user_id) { return res.status(403).json() }
 
@@ -277,14 +380,14 @@ router.put(`/api/fuel/logs`, (req, res) => {
                                 public.vehicles v 
                             where
                                 v.vehicle_id = $2`;
-            query.values = [log_id, vehicle_id, odometer];
+            query.values = [log.log_id, vehicle_id, log.odometer];
             let calcTripResults = await client.query(query);
             let trip = 0;
 
             if (calcTripResults.rowCount > 0) {
                 let row = calcTripResults.rows[0];
                 let last_odometer = (row['last_odometer']) ? row['last_odometer'] : row['purchase_mileage'];
-                trip = odometer - last_odometer;
+                trip = log.odometer - last_odometer;
             } else {
                 return res.status(500).json();
             }
@@ -305,30 +408,28 @@ router.put(`/api/fuel/logs`, (req, res) => {
                                             is_excluded = $13
                                 WHERE log_id = $1 RETURNING *) ${querySelectFuelLogs('cte_fuel_log')} WHERE fl.log_id = $1`;
             query.values = [
-                log_id,
+                log.log_id,
                 vehicle_id,
-                purchase_date,
-                gallons,
-                fuel_cost,
-                odometer,
+                log.purchase_date,
+                log.gallons,
+                log.fuel_cost,
+                log.odometer,
                 trip,
-                octane_id,
-                brand_id,
-                station_id,
-                is_partial_fill,
-                is_ethonal_free,
-                is_excluded
+                log.octane.id,
+                log.brand.id,
+                log.station.id,
+                log.is_partial_fill,
+                log.is_ethonal_free,
+                log.is_excluded
             ];
             let updateLogResults = await client.query(query);
-            let updateTripResults = await resyncFuelLogs(client, vehicle_id, odometer);
-
+            await resyncFuelLogs(client, vehicle_id, log.odometer);
             await client.query("COMMIT");
 
+            const fuelLogsView = await refreshFuelLogsView(pool, vehicle_id, user_id, rows_per_page, page);
+
             if (updateLogResults.rowCount > 0) {
-                return res.status(200).json({
-                    log: updateLogResults.rows,
-                    trip: updateTripResults.rows
-                });
+                return res.status(200).json(fuelLogsView);
             } else {
                 return res.status(404).json();
             }
@@ -348,10 +449,14 @@ router.delete(`/api/fuel/logs`, (req, res) => {
 
     let {
         log_id,
-        user_id
+        user_id,
+        rows_per_page,
+        page
     } = req.body;
 
     if (user.id != user_id) { return res.status(403).json() }
+
+    if (!rows_per_page || !page) { return res.status(400).json() }
 
     if (!log_id || !user_id) { return res.status(400).json() }
 
@@ -379,13 +484,11 @@ router.delete(`/api/fuel/logs`, (req, res) => {
                 let odometer = deleteLogResults.rows[0]['odometer'];
                 let vehicle_id = deleteLogResults.rows[0]['vehicle_id'];
                 updateTripResults = await resyncFuelLogs(client, vehicle_id, odometer);
-
                 await client.query("COMMIT");
 
-                return res.status(200).json({
-                    log: deleteLogResults.rows,
-                    trip: updateTripResults ? updateTripResults.rows : []
-                });
+                const fuelLogsView = await refreshFuelLogsView(pool, vehicle_id, user_id, rows_per_page, page);
+
+                return res.status(200).json(fuelLogsView);
             } else {
                 return res.status(404).json();
             }

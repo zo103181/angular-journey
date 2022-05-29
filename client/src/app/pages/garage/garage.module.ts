@@ -10,6 +10,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { GarageComponent } from './garage.component';
+import { FuelListComponent } from './fuel-list/fuel-list.component';
 import { VehiclesListComponent } from './vehicle-list/vehicle-list.component';
 import { VehiclesDetailsComponent } from './vehicle-details/vehicle-details.component';
 import { AuthGuard } from '../../core/auth/guards/auth.guard';
@@ -34,6 +35,10 @@ const routes = [{
             },
             canDeactivate: [CanDeactivateVehicleDetails]
         }]
+    },
+    {
+        path: 'vehicle/:vehicle_id/fuel',
+        component: FuelListComponent,
     }],
     canActivate: [AuthGuard]
 }];
@@ -41,6 +46,7 @@ const routes = [{
 @NgModule({
     declarations: [
         GarageComponent,
+        FuelListComponent,
         VehiclesListComponent,
         VehiclesDetailsComponent
     ],

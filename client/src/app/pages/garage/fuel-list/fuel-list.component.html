@@ -1,0 +1,147 @@
+<ng-container *ngIf="showFuelLogForm | async">
+    <ng-container *ngIf="(fuelLog$ | async) as log">
+        <pre>{{ log | json }}</pre>
+        <button type="button"
+            class="px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-white bg-sky-500 hover:bg-sky-600"
+            (click)="createLog(log)">Create</button>
+        <button type="button"
+            class="ml-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-300"
+            (click)="updateLog(log)">
+            Update
+        </button>
+        <button type="button"
+            class="ml-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-white bg-red-500 hover:bg-red-600"
+            (click)="deleteLogById(log.log_id)">Delete</button>
+        <button type="button"
+            class="ml-2 px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-300"
+            (click)="showFuelLogForm.next(false)">Close</button>
+    </ng-container>
+</ng-container>
+
+<ng-container *ngIf="!(showFuelLogForm | async)">
+    <ng-container *ngIf="(vehicle$ | async) as vehicle">
+        <ng-container *ngIf="(fuelLogs$ | async) as logs">
+            <!-- Header -->
+            <div class="flex flex-row flex-auto justify-between py-4 px-4 bg-gray-800 text-white sticky top-16">
+
+                <!-- Title -->
+                <div>
+                    <div class="text-2xl font-extrabold tracking-tight leading-none">{{ vehicle.year }} {{ vehicle.model
+                        }}
+                    </div>
+                    <div class="ml-0.5 font-medium text-sm">
+                        {{ vehicle.manufacturer }}
+                    </div>
+                </div>
+
+                <!-- Main actions -->
+                <div class="flex items-center">
+                    <div class="flex-auto">
+                    </div>
+                    <button class="ml-4" mat-flat-button [color]="'primary'">
+                        <mat-icon [svgIcon]="'heroicons_outline:plus'"></mat-icon>
+                        <span class="ml-2 mr-1">Add</span>
+                    </button>
+                </div>
+            </div>
+            <hr>
+            <section class="p-4">
+
+                <section class="flex flex-col md:flex-row w-full shadow">
+                    <div class="p-6 sm:p-8 lg:p-10">
+                        <div class="text-3xl font-bold">Kwik Trip</div>
+                        <div class="mt-2 leading-relaxed text-sm">
+                            <p>1380 15th Ave</p>
+                            Union Grove, Wisconsin 53182
+                        </div>
+                        <div class="flex items-center">
+                            <div class="font-medium text-sm">INCLUDED FEATURES</div>
+                            <div class="flex-auto ml-2 border-b-2"></div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-center p-8 lg:px-10 lg:py-12 bg-gray-100">
+                        <div class="flex items-center whitespace-nowrap">
+                            <div class="text-4xl font-extrabold tracking-tight">24.04</div>
+                            <div class="ml-2 text-2xl font-semibold">MPG</div>
+                        </div>
+                        <!-- <div class="grid grid-rows-3 grid-flow-col gap-4">
+                            <div class="row-span-3 bg-pink-600">01</div>
+                            <div class="col-span-2 bg-pink-600">02</div>
+                            <div class="row-span-2 col-span-2 bg-pink-600">03</div>
+                        </div> -->
+                        <button class="w-full mt-8 lg:mt-auto bg-blue-600 hover:bg-blue-700 text-white font-bold"
+                            mat-flat-button>
+                            Edit
+                        </button>
+                    </div>
+                </section>
+
+                <section
+                    class="flex flex-col md:flex-row max-w-80 md:max-w-160 w-full rounded-md shadow hover:shadow-xl">
+                    <div class="flex flex-col flex-auto m-8 mb-4">
+                        <div class="flex flex-col md:flex-row items-baseline justify-between">
+                            <div class="text-3xl font-extrabold leading-tight">Kwik Trip</div>
+                            <div class="text-2xl font-semibold mt-4 md:mt-0 md:ml-6">24.04 <span>MPG</span>
+                            </div>
+                        </div>
+                        <div class="text-md text-sm mt-6">
+                            White sneakers are made of natural, biodegradable material. This feature alione makes them
+                            extremely nature friendly.
+                        </div>
+                        <div class="flex items-center text-md mt-6">
+                            <span class="text-sm whitespace-nowrap mr-3">Select a size:</span>
+                            <span class="mr-2">39</span>
+                            <span class="mr-2">40</span>
+                            <span class="mr-2">41</span>
+                            <span class="font-bold text-primary mr-2">42</span>
+                            <span class="mr-2">43</span>
+                        </div>
+                        <hr class="w-full border-b mt-6 mb-4">
+                        <div class="flex items-center md:mt-auto -mx-3">
+                            <button class="px-3 mr-1" mat-button [color]="'primary'" [routerLink]="['./']">
+                                <mat-icon class="icon-size-5" [svgIcon]="'heroicons_solid:shopping-cart'"></mat-icon>
+                                <span class="ml-2">Add to Cart</span>
+                            </button>
+                            <button class="ml-auto" mat-icon-button>
+                                <mat-icon class="icon-size-5 text-hint" [svgIcon]="'heroicons_solid:heart'"></mat-icon>
+                            </button>
+                            <button mat-icon-button>
+                                <mat-icon class="icon-size-5 text-hint" [svgIcon]="'heroicons_solid:switch-horizontal'">
+                                </mat-icon>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <div *ngFor="let fuel of logs['data']; let i = index;" class="py-4" (click)="getLogById(fuel.log_id)">
+                    <b>{{ fuel.purchase_date | date }}</b>
+                    <p>{{ fuel.station.address.street }}</p>
+                    {{ fuel.station.address.city }}, {{ fuel.station.address.state }} {{ fuel.station.address.zip }}
+                </div>
+            </section>
+            <div class="sticky bottom-0 z-10 flex-shrink-0 flex h-16 bg-gray-800 text-white shadow">
+                <p class="px-4 pt-6">
+                    <span class="font-medium">{{ ((logs['page'] * logs['rows_per_page']) - (logs['rows_per_page'])) + 1
+                        }}</span>
+                    to
+                    <span class="font-medium">{{ (logs['page'] * logs['rows_per_page']) }}</span>
+                    of
+                    <span class="font-medium">{{ logs['total_rows'] }}</span>
+                </p>
+                <div class="flex-1 px-4 flex justify-between">
+                    <div class="flex-1 flex">
+                        <!-- Placeholder for left aligned navigation -->
+                    </div>
+                    <div class="ml-4 flex items-center md:ml-6">
+                        <button type="button"
+                            class="px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                            (click)="loadLogs(logs['page'] - 1, logs['rows_per_page'])">Prev</button>
+                        <button type="button"
+                            class="ml-3 px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+                            (click)="loadLogs(logs['page'] + 1, logs['rows_per_page'])">Next</button>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </ng-container>
+</ng-container>

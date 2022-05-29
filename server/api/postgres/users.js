@@ -4,12 +4,8 @@ const router = express.Router();
 const db = require("../../pg-pool");
 const pool = db.getPool();
 
-router.get(`/api/user/:uid`, (req, res) => {
-    ; (async () => {
-        const { uid } = req.params;
-
-        const { rows } = await pool.query(
-            `SELECT
+const querySelectUser = (fromTable) => {
+    return `SELECT
                 u.user_id,
                 u.uid,
                 u.displayname,
@@ -19,9 +15,17 @@ router.get(`/api/user/:uid`, (req, res) => {
                 u.coverphotourl,
                 v.vehicle_id
             FROM
-                public.users u
+                ${fromTable} u
             LEFT OUTER JOIN public.vehicles v on
-                v.user_id = u.user_id WHERE uid = $1`,
+                v.user_id = u.user_id`
+}
+
+router.get(`/api/user/:uid`, (req, res) => {
+    ; (async () => {
+        const { uid } = req.params;
+
+        const { rows } = await pool.query(
+            `${querySelectUser('public.users')} WHERE u.uid = $1`,
             [uid]);
 
         if (rows.length === 0) {
@@ -71,55 +75,69 @@ router.post(`/api/user`, (req, res) => {
             let query;
             if (displayName) {
                 query = {
-                    text: `INSERT INTO public.users (
-                      uid, 
-                      displayname, 
-                      email, 
-                      emailverified, 
-                      photourl
-                  ) VALUES ($1, $2, $3, $4, $5) 
-                  ON CONFLICT ON CONSTRAINT users_email_ukey
-                  DO UPDATE SET uid = EXCLUDED.uid, 
-                                displayname = EXCLUDED.displayname,
-                                email = EXCLUDED.email,
-                                emailverified = EXCLUDED.emailverified,
-                                photourl = EXCLUDED.photourl
-                  RETURNING user_id, uid, displayname, email, emailverified, photourl`,
+                    text: `
+                        WITH cte_users AS (
+                            INSERT INTO public.users 
+                                (uid, displayname, email, emailverified, photourl) 
+                            VALUES ($1, $2, $3, $4, $5) 
+                            ON CONFLICT ON CONSTRAINT users_email_ukey
+                            DO UPDATE SET uid = EXCLUDED.uid, 
+                                          displayname = EXCLUDED.displayname,
+                                          email = EXCLUDED.email,
+                                          emailverified = EXCLUDED.emailverified,
+                                          photourl = EXCLUDED.photourl
+                            RETURNING user_id, uid, displayname, email, emailverified, photourl, coverphotourl) ${querySelectUser('cte_users')} WHERE u.user_id = u.user_id
+                    `,
                     values: [uid, displayName, email, emailVerified, photoURL]
                 }
             } else {
                 query = {
-                    text: `INSERT INTO public.users (
-                      uid,  
-                      email, 
-                      emailverified, 
-                      photourl
-                  ) VALUES ($1, $2, $3, $4) 
-                  ON CONFLICT ON CONSTRAINT users_email_ukey
-                  DO UPDATE SET uid = EXCLUDED.uid, 
-                                email = EXCLUDED.email,
-                                emailverified = EXCLUDED.emailverified,
-                                photourl = EXCLUDED.photourl
-                  RETURNING user_id, uid, displayname, email, emailverified, photourl`,
+                    text: `
+                        WITH cte_users AS (
+                            INSERT INTO public.users 
+                                (uid, email, emailveified, photourl) 
+                            VALUES ($1, $2, $3, $4) 
+                            ON CONFLICT ON CONSTRAINT users_email_ukey
+                            DO UPDATE SET uid = EXCLUDED.uid, 
+                                          email = EXCLUDED.email,
+                                          emailverified = EXCLUDED.emailverified,
+                                          photourl = EXCLUDED.photourl
+                            RETURNING user_id, uid, displayname, email, emailverified, photourl, coverphotourl) ${querySelectUser('cte_users')} WHERE u.user_id = u.user_id
+                    `,
                     values: [uid, email, emailVerified, photoURL]
                 }
             }
 
-            let results = await client.query(query);
-            if (results.rowCount === 1) {
-                const user_id = results.rows[0].user_id;
-                const user_uid = results.rows[0].uid;
+            let { rows } = await client.query(query);
+            if (rows.length === 0) {
+                req.session.user = null;
+                res.status(500).json("Could not find this user");
+            } else {
+                let vehicles = [];
+                let user = {};
+                rows.map(row => {
+                    user['id'] = row.user_id;
+                    user['uid'] = row.uid;
+                    user['email'] = row.email;
+                    user['photoURL'] = row.photourl;
+                    user['displayName'] = row.displayname;
+                    user['emailVerified'] = row.emailverified;
+                    user['coverPhotoURL'] = row.coverphotourl;
+                    if (row.vehicle_id) {
+                        vehicles = [...vehicles, row.vehicle_id];
+                    }
+                });
+
+                user['vehicles'] = vehicles;
+
                 req.session.user = {
-                    id: user_id,
-                    uid: user_uid
+                    id: user['id'],
+                    uid: user['uid'],
+                    vehicles
                 };
 
-                results = {
-                    id: user_id, uid, displayName, email, emailVerified, photoURL
-                };
+                res.status(201).json(user);
             }
-
-            res.status(201).json(results);
         } finally {
             // Make sure to release the client before any error handling,
             // just in case the error handling itself throws an error.
