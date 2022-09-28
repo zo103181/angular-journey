@@ -1,5 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule } from "@angular/router";
+import { FieldValidatorModule } from "src/app/shared/components/field-validator/field-validator.module";
 
 import { SharedModule } from "../../../shared/shared.module";
 
@@ -14,6 +15,6 @@ const routes = [
 
 @NgModule({
   declarations: [SignUpComponent],
-  imports: [SharedModule, RouterModule.forChild(routes)],
+  imports: [SharedModule, RouterModule.forChild(routes), FieldValidatorModule],
 })
 export class SignUpModule { }

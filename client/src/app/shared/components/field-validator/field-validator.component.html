@@ -1,0 +1,6 @@
+<p *ngFor="let validation of fieldValidators">
+    <span *ngIf="formField.hasError(validation.type) && (formField.dirty || formField.touched)"
+        class="mt-2 text-sm text-red-600">
+        {{validation.message}}
+    </span>
+</p>

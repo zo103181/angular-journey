@@ -20,12 +20,8 @@
           <label class="block text-sm font-medium text-gray-700">Name</label>
           <input id="name" [formControlName]="'name'"
             class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-          <p *ngFor="let validation of signUpValidation.name">
-            <span *ngIf="signUpForm.get('name').hasError(validation.type) && 
-                    (signUpForm.get('name').dirty || 
-                    signUpForm.get('name').touched)" class="mt-2 text-sm text-red-600">
-              {{validation.message}}</span>
-          </p>
+          <field-validator [formField]="signUpForm.get('name')" [fieldValidators]="signUpValidation.name">
+          </field-validator>
         </section>
 
         <!-- Email Field -->
@@ -33,12 +29,8 @@
           <label class="block text-sm font-medium text-gray-700">Email</label>
           <input id="email" [formControlName]="'email'"
             class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-          <p *ngFor="let validation of signUpValidation.email">
-            <span *ngIf="signUpForm.get('email').hasError(validation.type) && 
-                    (signUpForm.get('email').dirty || 
-                    signUpForm.get('email').touched)" class="mt-2 text-sm text-red-600">
-              {{validation.message}}</span>
-          </p>
+          <field-validator [formField]="signUpForm.get('email')" [fieldValidators]="signUpValidation.email">
+          </field-validator>
         </section>
 
         <!-- Password Field -->
@@ -47,12 +39,8 @@
           <input id="password" [formControlName]="'password'" type="password" autocomplete="new-password" minlength
             required
             class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-          <p *ngFor="let validation of signUpValidation.password">
-            <span *ngIf="signUpForm.get('password').hasError(validation.type) && 
-                    (signUpForm.get('password').dirty || 
-                    signUpForm.get('password').touched)" class="mt-2 text-sm text-red-600">
-              {{validation.message}}</span>
-          </p>
+          <field-validator [formField]="signUpForm.get('password')" [fieldValidators]="signUpValidation.password">
+          </field-validator>
         </section>
 
         <!-- Confirm Password Field -->
@@ -61,12 +49,9 @@
           <input id="passwordConfirm" type="password" [formControlName]="'passwordConfirm'" autocomplete="new-password"
             required
             class="appearance-none block w-full px-3 py-2 border border-gray-400 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-          <p *ngFor="let validation of signUpValidation.passwordConfirm">
-            <span *ngIf="signUpForm.get('passwordConfirm').hasError(validation.type) && 
-                    (signUpForm.get('passwordConfirm').dirty || 
-                    signUpForm.get('passwordConfirm').touched)" class="mt-2 text-sm text-red-600">
-              {{validation.message}}</span>
-          </p>
+          <field-validator [formField]="signUpForm.get('passwordConfirm')"
+            [fieldValidators]="signUpValidation.passwordConfirm">
+          </field-validator>
         </section>
 
         <!-- Actions -->
