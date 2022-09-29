@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, UntypedFormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { AuthService } from '../../../core/auth/authentication.service';
@@ -23,15 +23,14 @@ export class ResetPasswordComponent implements OnInit {
     };
 
     constructor(
-        private formBuilder: FormBuilder,
         private route: ActivatedRoute,
         public auth: AuthService
     ) { }
 
     ngOnInit(): void {
-        this.resetPasswordForm = this.formBuilder.group({
-            email: [{ value: '', disabled: true }, [Validators.required]],
-            password: ['', [Validators.required, Validators.minLength(5)]]
+        this.resetPasswordForm = new FormGroup({
+            email: new FormControl<string>({ value: '', disabled: true }, [Validators.required]),
+            password: new FormControl<string>('', [Validators.required, Validators.minLength(5)])
         })
 
         this.route.queryParams.subscribe(params => {
@@ -40,9 +39,9 @@ export class ResetPasswordComponent implements OnInit {
                 this.auth.verifyPasswordResetCode(this.code).then((email) => {
                     if (email) {
                         this.codeExpired = false;
-                        this.resetPasswordForm = this.formBuilder.group({
-                            email: [{ value: email, disabled: true }, []],
-                            password: ['', [Validators.required, Validators.minLength(5)]]
+                        this.resetPasswordForm = new FormGroup({
+                            email: new FormControl<string>({ value: email, disabled: true }, []),
+                            password: new FormControl<string>('', [Validators.required, Validators.minLength(5)])
                         })
                     } else { this.codeExpired = true; }
                     this.isLoading = false;

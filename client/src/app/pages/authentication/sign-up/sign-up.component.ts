@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {
   AbstractControl,
-  FormBuilder,
+  FormControl,
   FormGroup,
   ValidationErrors,
   ValidatorFn,
@@ -72,7 +72,7 @@ export class SignUpComponent implements OnInit, OnDestroy {
     ]
   };
 
-  constructor(private formBuilder: FormBuilder, protected auth: AuthService) {
+  constructor(protected auth: AuthService) {
     // Set the private defaults
     this.unsubscribeAll = new Subject();
   }
@@ -80,12 +80,12 @@ export class SignUpComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.hideTerms = true;
 
-    this.signUpForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.minLength(3)]],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      passwordConfirm: ['', [Validators.required, confirmPasswordValidator]],
-      terms: [false, Validators.requiredTrue],
+    this.signUpForm = new FormGroup({
+      name: new FormControl<string>('', [Validators.required, Validators.minLength(3)]),
+      email: new FormControl<string>('', [Validators.required, Validators.email]),
+      password: new FormControl<string>('', [Validators.required, Validators.minLength(6)]),
+      passwordConfirm: new FormControl<string>('', [Validators.required, confirmPasswordValidator]),
+      terms: new FormControl<boolean>(false, Validators.requiredTrue),
     });
 
     // Update the validity of the 'passwordConfirm' field

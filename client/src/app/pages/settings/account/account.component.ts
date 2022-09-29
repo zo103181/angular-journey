@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { firstValueFrom, Subject } from 'rxjs';
 import { User } from 'src/app/core/models/user.interface';
 import { UserService } from 'src/app/core/user/user.service';
@@ -26,15 +26,14 @@ export class SettingsAccountComponent implements OnInit, OnDestroy {
     };
 
     constructor(
-        private formBuilder: FormBuilder,
         private notifier: NotificationService,
         private userService: UserService
     ) { }
 
     ngOnInit(): void {
-        this.accountForm = this.formBuilder.group({
-            name: [this.user.displayName, Validators.required],
-            email: [{ value: this.user.email, disabled: true }, Validators.required]
+        this.accountForm = new FormGroup({
+            name: new FormControl<string>(this.user.displayName, Validators.required),
+            email: new FormControl<string>({ value: this.user.email, disabled: true }, Validators.required)
         });
     }
 

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 
@@ -34,7 +34,6 @@ export class VehiclesDetailsComponent implements OnInit, OnDestroy {
 
     constructor(
         private changeDetectorRef: ChangeDetectorRef,
-        private formBuilder: FormBuilder,
         private router: Router,
         private userService: UserService,
         private vehicleListComponent: VehiclesListComponent,
@@ -45,27 +44,27 @@ export class VehiclesDetailsComponent implements OnInit, OnDestroy {
         // Open the drawer
         this.vehicleListComponent.matDrawer.open();
 
-        this.vehicleForm = this.formBuilder.group({
-            vehicle_id: [''],
-            user_id: [''],
-            year: ['', [Validators.required]],
-            manufacturer: ['', [Validators.required]],
-            model: ['', [Validators.required]],
-            color: [''],
-            bodystyle: [''],
-            motor: [''],
-            motor_type: [''],
-            transmission: [''],
-            drivetrain: [''],
-            interior: [''],
-            nickname: [null],
-            purchase_date: [null],
-            purchase_price: [null],
-            purchase_mileage: [null],
-            sold_date: [null],
-            sold_price: [null],
-            sold_mileage: [null],
-            vin: ['']
+        this.vehicleForm = new FormGroup({
+            vehicle_id: new FormControl<string>(''),
+            user_id: new FormControl<string>(''),
+            year: new FormControl<string>('', [Validators.required]),
+            manufacturer: new FormControl<string>('', [Validators.required]),
+            model: new FormControl<string>('', [Validators.required]),
+            color: new FormControl<string>(''),
+            bodystyle: new FormControl<string>(''),
+            motor: new FormControl<string>(''),
+            motor_type: new FormControl<string>(''),
+            transmission: new FormControl<string>(''),
+            drivetrain: new FormControl<string>(''),
+            interior: new FormControl<string>(''),
+            nickname: new FormControl<string | null>(null),
+            purchase_date: new FormControl<string | null>(null),
+            purchase_price: new FormControl<string | null>(null),
+            purchase_mileage: new FormControl<string | null>(null),
+            sold_date: new FormControl<string | null>(null),
+            sold_price: new FormControl<string | null>(null),
+            sold_mileage: new FormControl<string | null>(null),
+            vin: new FormControl<string>('')
         });
 
         this.vehicleService.vehicle$

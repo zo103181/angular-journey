@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 // Services
 import { AuthService } from '../../../core/auth/authentication.service';
@@ -23,14 +23,13 @@ export class SignInComponent implements OnInit {
   };
 
   constructor(
-    private formBuilder: FormBuilder,
     public auth: AuthService
   ) { }
 
   ngOnInit(): void {
-    this.signInForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(5)]]
+    this.signInForm = new FormGroup({
+      email: new FormControl<string>('', [Validators.required, Validators.email]),
+      password: new FormControl<string>('', [Validators.required, Validators.minLength(5)])
     });
   }
 
